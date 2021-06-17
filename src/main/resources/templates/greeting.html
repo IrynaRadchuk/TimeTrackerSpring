@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.thymeleaf.org ">
+<title th:text="${title}"></title>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="headerGuest :: headerGuest"></header>
+<h1><b>Welcome to the Time Tracker Application!</b></h1>
+<h1 th:text="${title}"></h1>
+<ul class="checked-list">
+    <li><span class="letter">Request new activities</span></li>
+    <li><span class="letter">Manage time calendar</span></li>
+    <li><span class="letter">See current and past activities</span></li>
+    <li><span class="letter">Count billable hours</span></li>
+    <li><span class="letter">Track productivity</span></li>
+    <li><span class="letter">Manage your working time</span></li>
+    <li><span class="letter">Set activities duration</span></li>
+</ul>
+</body>
+</html>
