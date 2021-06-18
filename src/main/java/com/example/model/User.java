@@ -1,21 +1,46 @@
 package com.example.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @Entity
+@Table(name = "user")
 public class User {
     @Id
     @GeneratedValue (strategy = GenerationType.AUTO)
+    @Column(name = "user_id")
     private Long id;
-    private String user_email;
-    private String user_password;
-    private String user_first_name;
-    private String user_last_name;
-    private Role role;
+    @Column(name = "user_email")
+    @NotBlank(message = "Email is mandatory")
+    @Email (message = "Wrong Email format")
+    private String userEmail;
+    @Column(name = "user_password")
+    @Pattern(regexp="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{6,20}$", message = "Wrong Password format")
+    @NotBlank(message = "Password is mandatory")
+    private String userPassword;
+    @Column(name = "user_first_name")
+    @Pattern(regexp="^[A-Z][a-z]{2,20}$", message = "Wrong First Name format")
+    @NotBlank(message = "First Name is mandatory")
+    private String userFirstName;
+    @Column(name = "user_last_name")
+    @Pattern(regexp="^[A-Z][a-z]{2,20}$", message = "Wrong Last Name format")
+    @NotBlank(message = "Last Name is mandatory")
+    private String userLastName;
+    @Column(name = "role_id")
+    private int roleId;
 
+    public User() {
+    }
+
+    public User(String userEmail, String userPassword, String userFirstName, String userLastName) {
+        this.userEmail = userEmail;
+        this.userPassword = userPassword;
+        this.userFirstName = userFirstName;
+        this.userLastName = userLastName;
+        this.roleId = 1;
+    }
 
     public Long getId() {
         return id;
@@ -25,35 +50,43 @@ public class User {
         this.id = id;
     }
 
-    public String getUser_email() {
-        return user_email;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public void setUser_email(String user_email) {
-        this.user_email = user_email;
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
-    public String getUser_password() {
-        return user_password;
+    public String getUserPassword() {
+        return userPassword;
     }
 
-    public void setUser_password(String user_password) {
-        this.user_password = user_password;
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
     }
 
-    public String getUser_first_name() {
-        return user_first_name;
+    public String getUserFirstName() {
+        return userFirstName;
     }
 
-    public void setUser_first_name(String user_first_name) {
-        this.user_first_name = user_first_name;
+    public void setUserFirstName(String userFirstName) {
+        this.userFirstName = userFirstName;
     }
 
-    public String getUser_last_name() {
-        return user_last_name;
+    public String getUserLastName() {
+        return userLastName;
     }
 
-    public void setUser_last_name(String user_last_name) {
-        this.user_last_name = user_last_name;
+    public void setUserLastName(String userLastName) {
+        this.userLastName = userLastName;
+    }
+
+    public int getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
     }
 }

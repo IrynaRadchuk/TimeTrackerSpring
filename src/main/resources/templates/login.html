@@ -6,9 +6,26 @@
 </head>
 <body>
 <header th:insert="headerGuest :: headerGuest"></header>
-<h1><b>Welcome to the Time Tracker Application!</b></h1>
-<ul class="checked-list">
-    <li><span class="letter">Set activities duration</span></li>
-</ul>
+<div class="container mt-5 ml-1">
+<b> <h2  th:text="#{login_page.header}"></h2></b>
+<h4 th:text="#{login_page.subheader1}"></h4>
+<h4 th:text="#{login_page.subheader2}"><a href ="registration" th:text="#{navbar.signup}"></a></h4>
+<form action="login" method = "post">
+<label><span th:text="#{login_page.email}"></span></label>
+<input type="text" name="user_email" placeholder="Enter Email" class="form-control">
+<br>
+<label><span th:text="#{login_page.password}"></span></label>
+<input type="text" name="user_password" placeholder="Enter Password" class="form-control">
+<br>
+<button type="submit" class="btn btn-success" th:text="#{navbar.signin}"></button>
+</form>
+<br>
+<form action="index">
+    <button type="submit" class="btn btn-danger" th:text="#{button.cancel}"></button>
+</form>
+</div>
+<div th:each ="el:${users}">
+<h3 th:text="${el?.userEmail}"></h3>
+</div>
 </body>
 </html>

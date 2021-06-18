@@ -1,11 +1,34 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css">
 </head>
 <body>
 <header th:insert="headerGuest :: headerGuest"></header>
-<h1><b>Welcome to the Time Tracker Application!</b></h1>
+<div class="container mt-5 ml-5 mr-5">
+    <b><h2 th:text="#{registration_page.header}"></h2></b>
+    <h4 th:text="#{registration_page.subheader1}"></h4>
+    <h4 th:text="#{registration_page.subheader2}"><a href="registration" th:text="#{navbar.signin}"></a></h4>
+    <form action="registration" method="post" modelAttribute="user">
+        <label><span th:text="#{login_page.email}"></span></label>
+        <input type="text" name="userEmail" placeholder="Enter Email" class="form-control">
+        <br>
+        <label><span th:text="#{login_page.password}"></span></label>
+        <input type="password" name="userPassword" placeholder="Enter Password" class="form-control">
+        <br>
+        <label><span th:text="#{registration_page.first.name}"></span></label>
+        <input type="text" name="userFirstName" placeholder="Enter First Name" class="form-control">
+        <br>
+        <label><span th:text="#{registration_page.last.name}"></span></label>
+        <input type="text" name="userLastName" placeholder="Last Name" class="form-control">
+        <br>
+        <button type="submit" class="btn btn-success" th:text="#{navbar.signup}"></button>
+    </form>
+    <br>
+    <form action="index">
+        <button type="submit" class="btn btn-danger" th:text="#{button.cancel}"></button>
+    </form>
+</div>
 </body>
 </html>

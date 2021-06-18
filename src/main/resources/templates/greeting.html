@@ -8,16 +8,15 @@
 </head>
 <body>
 <header th:insert="headerGuest :: headerGuest"></header>
-<h1><b>Welcome to the Time Tracker Application!</b></h1>
-<h1 th:text="${title}"></h1>
+<b><h1 th:text="#{home_page.welcome.header}"></h1></b>
 <ul class="checked-list">
-    <li><span class="letter">Request new activities</span></li>
-    <li><span class="letter">Manage time calendar</span></li>
-    <li><span class="letter">See current and past activities</span></li>
-    <li><span class="letter">Count billable hours</span></li>
-    <li><span class="letter">Track productivity</span></li>
-    <li><span class="letter">Manage your working time</span></li>
-    <li><span class="letter">Set activities duration</span></li>
+    <li><span class="letter" th:text="#{home_page.description1 }"></span></li>
+    <li><span class="letter" th:text="#{home_page.description2 }"></span></li>
+    <li><span class="letter" th:text="#{home_page.description3 }"></span></li>
+    <li><span class="letter" th:text="#{home_page.description4 }"></span></li>
+    <li><span class="letter" th:text="#{home_page.description5 }"></span></li>
+    <li><span class="letter" th:text="#{home_page.description6 }"></span></li>
+    <li><span class="letter" th:text="#{home_page.description7 }"></span></li>
 </ul>
 </body>
 </html>

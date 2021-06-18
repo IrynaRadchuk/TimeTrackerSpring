@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <div>
         <nav class="container d-flex flex-column flex-md-row justify-content-between">
-            <a class="py-2 d-none d-md-inline-block" href="index" th:text="#{navbar.home}"></a>
-            <a class="py-2 d-none d-md-inline-block" href="login" th:text="#{navbar.signin}"></a>
-            <a class="py-2 d-none d-md-inline-block" href="registration" th:text="#{navbar.signup}"></a>
+            <a class="py-2 d-none d-md-inline-block" href="index"><span th:text="#{navbar.home}"></span></a>
+            <a class="py-2 d-none d-md-inline-block" href="login"><span th:text="#{navbar.signin}"></span></a>
+            <a class="py-2 d-none d-md-inline-block" href="registration"><span th:text="#{navbar.signup}"></span></a>
         </nav>
     </div>
     <span th:text="#{lang.change}"></span>:
@@ -28,6 +28,5 @@ $(document).ready(function() {
         }
     });
 });
-
-    </script>
+</script>
 </div>
