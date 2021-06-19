@@ -1,6 +1,7 @@
 package com.example.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "activity")
@@ -11,8 +12,69 @@ public class Activity {
     private Long id;
     @Column(name = "activity_name")
     private String activityName;
-    @Column(name = "category_id")
-    private Long categoryId;
     @Column(name = "activity_ua")
     private String activityUa;
+
+    @ManyToOne (fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    public Activity() {
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getActivityName() {
+        return activityName;
+    }
+
+    public void setActivityName(String activityName) {
+        this.activityName = activityName;
+    }
+
+    public String getActivityUa() {
+        return activityUa;
+    }
+
+    public void setActivityUa(String activityUa) {
+        this.activityUa = activityUa;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Activity)) return false;
+        Activity activity = (Activity) o;
+        return Objects.equals(id, activity.id) &&
+                Objects.equals(activityName, activity.activityName) &&
+                Objects.equals(activityUa, activity.activityUa);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, activityName, activityUa);
+    }
+
+    @Override
+    public String toString() {
+        return "Activity{" +
+                "id=" + id +
+                ", activityName='" + activityName + '\'' +
+                ", activityUa='" + activityUa + '\'' +
+                '}';
+    }
 }

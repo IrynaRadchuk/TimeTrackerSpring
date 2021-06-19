@@ -1,16 +1,24 @@
-<div th:fragment="headerGuest" xmlns:th="http://www.w3.org/1999/xhtml">
+<div th:fragment="headerAdmin" xmlns:th="http://www.w3.org/1999/xhtml">
     <link rel="stylesheet" href="/css/error.css">
-    <link rel="stylesheet" th:href="@{/css/background.css}">
+    <link rel="stylesheet" href="/css/background.css">
     <link rel="stylesheet" href="/css/w3.css">
+    <link rel="stylesheet" href="/css/manage.css">
+    <link rel="stylesheet" href="/css/table.css">
+    <script src="/js/statistics.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <div>
-        <nav class="container d-flex flex-column flex-md-row justify-content-between">
-            <a class="py-2 d-none d-md-inline-block" href="index"><span th:text="#{navbar.home}"></span></a>
-            <a class="py-2 d-none d-md-inline-block" href="login"><span th:text="#{navbar.signin}"></span></a>
-            <a class="py-2 d-none d-md-inline-block" href="registration"><span th:text="#{navbar.signup}"></span></a>
+        <nav class="w3-bar w3-black">
+            <a class="w3-button w3-bar-item" href="index" th:text="#{navbar.home}"></a>
+            <a class="w3-button w3-bar-item" href="login" th:text="#{navbar.signout}"></a>
+            <a class="w3-button w3-bar-item" href="adminUsers" th:text="#{navbar.manageUsers}"></a>
+            <a class="w3-button w3-bar-item" href="adminActivities" th:text="#{navbar.manageActivities}"></a>
+            <a class="w3-button w3-bar-item" href="adminRequests" th:text="#{navbar.manageRequests}"></a>
+            <a class="w3-button w3-bar-item" href="statActivities" th:text="#{navbar.activityStat}"></a>
+            <a class="w3-button w3-bar-item" href="statUsers" th:text="#{navbar.userStat}"></a>
         </nav>
     </div>
+    <br>
     <span th:text="#{lang.change}"></span>:
     <select id="locales">
         <option value=""></option>
@@ -28,5 +36,6 @@ $(document).ready(function() {
         }
     });
 });
-</script>
+
+    </script>
 </div>

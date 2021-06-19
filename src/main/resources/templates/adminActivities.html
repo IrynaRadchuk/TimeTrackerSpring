@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="headerAdmin :: headerAdmin"></header>
+<b> <h2  th:text="#{admin_page.activities.header}"></h2></b>
+<table>
+    <tr>
+        <th>
+            <span th:text="#{admin_page.activities.header0}"></span>
+        </th>
+        <th>
+            <span th:text="#{admin_page.activities.header1}"></span>
+        </th>
+        <th>
+            <span th:text="#{admin_page.activities.header2}"></span>
+        </th>
+        <th>
+            <span th:text="#{admin_page.activities.header4}"></span>
+        </th>
+        <th>
+            <span th:text="#{admin_page.activities.header3}"></span>
+        </th>
+        <th></th>
+        <th></th>
+    </tr>
+    <form method="post" action="changeUser">
+        <tr th:each ="el:${activities}">
+            <td th:text="${el?.Id}" aria-readonly="true">
+            </td>
+            <td th:text="${el?.activityName}">
+            </td>
+            <td th:text="${el?.category.Id}">
+            </td>
+            <td th:text="${el?.activityUa}">
+            </td>
+            <td>
+
+            </td>
+            <td>
+                <button type="submit" class="btn btn-success" formaction="changeActivity" th:text="#{button.change}"></button>
+            </td>
+            <td>
+                <button type="submit" class="btn btn-danger" formaction="deleteActivity" th:text="#{button.delete}"></button>
+            </td>
+    </form>
+    </tr>
+    <form method="post">
+        <tr>
+            <td>
+            </td>
+            <td>
+                <input type="text" name="activityName">
+            </td>
+            <td>
+            </td>
+            <td>
+                <input type="text" name="activityUa">
+            </td>
+            <td>
+                <!--                <select name="all_roles" id="all_roles">-->
+                <!--                    <c:forEach items="${all_roles}" var="role">-->
+                <!--                        <option value="${role}" name = "role" id="role">-->
+                <!--                            ${role}-->
+                <!--                        </option>-->
+                <!--                    </c:forEach>-->
+                <!--                </select>-->
+            </td>
+            <td>
+                <button type="submit" class="btn btn-success" formaction="addActivities" th:text="#{button.addition}"></button>
+            </td>
+    </form>
+    </tr>
+</table>
+</body>
+</html>

@@ -2,12 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="/css/login.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css">
 </head>
 <body>
 <header th:insert="headerGuest :: headerGuest"></header>
-<div class="container mt-5 ml-5 mr-5">
-    <b><h2 th:text="#{registration_page.header}"></h2></b>
+<div class="container">
+    <h2 th:text="#{registration_page.header}"></h2>
     <h4 th:text="#{registration_page.subheader1}"></h4>
     <h4 th:text="#{registration_page.subheader2}"><a href="registration" th:text="#{navbar.signin}"></a></h4>
     <form action="registration" method="post" modelAttribute="user">

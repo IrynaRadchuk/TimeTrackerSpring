@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="headerAdmin :: headerAdmin"></header>
+<b> <h2  th:text="#{statistics_page.header}"></h2></b>
+<br>
+<table>
+    <tr>
+        <th th:text="#{statistics_page.user.table.head0}">
+        </th>
+        <th th:text="#{statistics_page.user.table.head1}">
+        </th>
+        <th th:text="#{statistics_page.user.table.head2}">
+        </th>
+        <th th:text="#{statistics_page.user.table.head3}">
+        </th>
+        <th th:text="#{statistics_page.user.table.head4}">
+        </th>
+        <th th:text="#{statistics_page.user.table.head5}">
+        </th>
+    </tr>
+    <tr th:each ="el:${userActivities}">
+        <form method="get">
+            <td th:text="${el?.activityDate}">
+            </td>
+            <td th:text="${el?.user.userEmail}">
+            </td>
+            <td th:text="${el?.user.userFirstName}">
+            </td>
+            <td th:text="${el?.user.userLastName}">
+            </td>
+            <td th:text="${el?.activity.activityName}">
+            </td>
+            <td th:text="${el?.activityDuration}">
+            </td>
+        </form>
+    </tr>
+</table>
+</body>
+</html>

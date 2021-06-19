@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="headerAdmin :: headerAdmin"></header>
+<b> <h2  th:text="#{statistics_page.header}"></h2></b>
+<input type="text" id="myInput" onkeyup="myFunction()" placeholder='Search by category' title="Type in a name">
+<br>
+<table id="myTable" class="tablesorter">
+    <tr>
+        <th onclick="sortTable(0)">
+            <span th:text="#{statistics_page.activity.table.head0}"></span>
+        </th>
+        <th onclick="sortTable(1)">
+            <span th:text="#{statistics_page.activity.table.head1}"></span>
+        </th>
+        <th onclick="sortTable(2)">
+            <span th:text="#{statistics_page.activity.table.head2}"></span>
+        </th>
+    </tr>
+        <tr th:each ="el:${activityStat}">
+        <form method="get">
+    <td th:text="${el?.activityName}">
+                </td>
+            <td th:text="${el?.category.categoryName}">
+                </td>
+                <td>
+
+                </td>
+        </form>
+    </tr>
+</table>
+</body>
+</html>

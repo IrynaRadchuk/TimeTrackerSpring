@@ -20,11 +20,10 @@ import java.util.Map;
 import java.util.Set;
 
 @Controller
-public class GreetingController {
+public class GuestController {
 
     @GetMapping("/tracker/index")
     public String greeting(Model model) {
-        model.addAttribute("title","Time Tracker");
         return "greeting";
     }
 

@@ -1,0 +1,22 @@
+input[type=text], input[type=password] {
+  padding: 12px 50px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.cancelbtn {
+  width: auto;
+  padding: 10px 18px;
+  background-color: #FF6A61;
+  margin: 15px;
+}
+.button {
+  width: auto;
+  padding: 10px 18px;
+  background-color:#B5FBDD;
+}
+.container {
+  padding: 16px;
+}

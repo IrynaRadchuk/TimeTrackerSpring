@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.util.Objects;
 
 @Entity
 @Table(name = "user")
@@ -88,5 +89,35 @@ public class User {
 
     public void setRoleId(int roleId) {
         this.roleId = roleId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return roleId == user.roleId &&
+                Objects.equals(id, user.id) &&
+                Objects.equals(userEmail, user.userEmail) &&
+                Objects.equals(userPassword, user.userPassword) &&
+                Objects.equals(userFirstName, user.userFirstName) &&
+                Objects.equals(userLastName, user.userLastName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, userEmail, userPassword, userFirstName, userLastName, roleId);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", userEmail='" + userEmail + '\'' +
+                ", userPassword='" + userPassword + '\'' +
+                ", userFirstName='" + userFirstName + '\'' +
+                ", userLastName='" + userLastName + '\'' +
+                ", roleId=" + roleId +
+                '}';
     }
 }
