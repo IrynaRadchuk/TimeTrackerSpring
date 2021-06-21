@@ -4,7 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import java.util.Objects;
+
 
 @Entity
 @Table(name = "user")
@@ -29,8 +29,11 @@ public class User {
     @Pattern(regexp="^[A-Z][a-z]{2,20}$", message = "Wrong Last Name format")
     @NotBlank(message = "Last Name is mandatory")
     private String userLastName;
-    @Column(name = "role_id")
-    private int roleId;
+
+    @ManyToOne (fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id")
+    private Role role;
+
 
     public User() {
     }
@@ -40,7 +43,7 @@ public class User {
         this.userPassword = userPassword;
         this.userFirstName = userFirstName;
         this.userLastName = userLastName;
-        this.roleId = 1;
+        this.role = new Role(1L,RoleName.USER);
     }
 
     public Long getId() {
@@ -83,41 +86,11 @@ public class User {
         this.userLastName = userLastName;
     }
 
-    public int getRoleId() {
-        return roleId;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
-        return roleId == user.roleId &&
-                Objects.equals(id, user.id) &&
-                Objects.equals(userEmail, user.userEmail) &&
-                Objects.equals(userPassword, user.userPassword) &&
-                Objects.equals(userFirstName, user.userFirstName) &&
-                Objects.equals(userLastName, user.userLastName);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, userEmail, userPassword, userFirstName, userLastName, roleId);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", userEmail='" + userEmail + '\'' +
-                ", userPassword='" + userPassword + '\'' +
-                ", userFirstName='" + userFirstName + '\'' +
-                ", userLastName='" + userLastName + '\'' +
-                ", roleId=" + roleId +
-                '}';
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

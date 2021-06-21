@@ -23,7 +23,7 @@
         <th th:text="#{statistics_page.user.table.head5}">
         </th>
     </tr>
-    <tr th:each ="el:${userActivities}">
+    <tr th:each ="el:${userActivities.content}">
         <form method="get">
             <td th:text="${el?.activityDate}">
             </td>
@@ -40,5 +40,19 @@
         </form>
     </tr>
 </table>
+<div class="pagination-div">
+    <span th:if="${userActivities.hasPrevious()}">
+        <a th:href="@{/tracker/statUsers(userActivities=${number-1},size=${size})}">Previous</a>
+    </span>
+    <th:block th:each="i: ${#numbers.sequence(0, totalPages - 1)}">
+        <span th:if="${number == i}" class="selected">[[${i}+1]]</span>
+        <span th:unless="${number == i}">
+             <a th:href="@{/tracker/statUsers(userActivities=${i},size=${size})}">[[${i}+1]]</a>
+        </span>
+    </th:block>
+    <span th:if="${userActivities.hasNext()}">
+        <a th:href="@{/tracker/statUsers(userActivities=${number+1},size=${size})}">Next</a>
+    </span>
+</div>
 </body>
 </html>

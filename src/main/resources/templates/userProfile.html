@@ -11,9 +11,26 @@
 <div class="card-body">
     <div class="card-text">
         <label><span th:text="#{login_page.email}"></span></label>
-    </div>
+        <br>
     <span th:text="${user.userEmail}"></span>
     </div>
+    <br>
+    <div class="card-text">
+        <label><span th:text="#{registration_page.first.name }"></span></label>
+        <br>
+        <span th:text="${user.userFirstName}"></span>
+    </div>
+    <br>
+    <div class="card-text">
+        <label><span th:text="#{registration_page.last.name }"></span></label>
+        <br>
+        <span th:text="${user.userLastName}"></span>
+    </div>
+    <br>
+    </div>
 </div>
+<form method="get" action="update">
+    <button type="submit" class="btn btn-success" formaction="updateProfile" th:text="#{profile_page.update}"></button>
+</form>
 </body>
 </html>

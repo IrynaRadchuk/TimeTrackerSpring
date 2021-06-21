@@ -20,39 +20,37 @@ import java.util.Map;
 import java.util.Set;
 
 @Controller
+@RequestMapping("/tracker")
 public class GuestController {
 
-    @GetMapping("/tracker/index")
-    public String greeting(Model model) {
+    @GetMapping("/index")
+    public String greeting() {
         return "greeting";
     }
 
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/tracker/login")
-    public String login(Model model) {
-        Iterable<User> users = userRepository.findAll();
-        model.addAttribute("users", users);
+    @GetMapping("/login")
+    public String login() {
         return "login";
     }
 
-    @GetMapping("/tracker/registration")
-    public String registration(Model model) {
-        model.addAttribute("name");
+    @GetMapping("/registration")
+    public String registration() {
         return "registration";
     }
 
-    @PostMapping("/tracker/login")
+/*    @PostMapping("/tracker/login")
     public String loginPost(@RequestParam String userEmail,
                             @RequestParam String userPassword,
                             Model model) {
-        Iterable<User> users = userRepository.findAll();
-        model.addAttribute("users", users);
-        return "index";
-    }
+        System.err.println(userEmail +  userPassword);
 
-    @PostMapping("/tracker/registration")
+        return "redirect:/tracker/adminUser";
+    }*/
+
+    @PostMapping("/registration")
     public String registrationPost(@Valid @RequestBody
                                        @RequestParam String userEmail,
                                    @RequestParam String userPassword,

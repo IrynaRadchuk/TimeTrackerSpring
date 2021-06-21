@@ -8,10 +8,17 @@ import com.example.model.repository.ActivityRepository;
 import com.example.model.repository.UserActivityRepository;
 import com.example.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
 
 @Controller
 public class AdminController {
@@ -46,11 +53,28 @@ public class AdminController {
         return "statActivities";
     }
     @GetMapping("/tracker/statUsers")
-    public String statUsers(Model model) {
-        Iterable<UserActivity> userActivities = userActivityRepository.findAll();;
+    public String statUsers(Model model,
+                            @PageableDefault(size = 8) Pageable pageable) {
+        Page<UserActivity> userActivities = userActivityRepository.findAll(pageable);
+        model.addAttribute("number", userActivities.getNumber());
+        model.addAttribute("totalPages", userActivities.getTotalPages());
+        model.addAttribute("totalElements",
+                userActivities.getTotalElements());
+        model.addAttribute("size", userActivities.getSize());
+        model.addAttribute("users", userActivities.getContent());
         model.addAttribute("userActivities", userActivities);
         return "statUsers";
     }
+
+//    @PostMapping
+//    public User addUser (@RequestBody User user){
+//        userRepository.save(user);
+//        return user;
+//    }
+//    @PostMapping
+//    public void deleteUser (@RequestBody User user){
+//        userRepository.delete(user);
+//    }
 //    @GetMapping("/tracker/adminRequests")
 //    public String adminRequests(Model model) {
 //        Iterable<UserActivity> userActivities = userActivityRepository.findAll();

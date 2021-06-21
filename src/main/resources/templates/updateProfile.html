@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="/css/profile.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="headerUser :: headerUser"></header>
+<b> <h2  th:text="#{update_page.header}"></h2></b>
+<div class="card-body">
+    <form action="/tracker/updateProfile" method="post">
+    <div class="card-text">
+        <label><span th:text="#{login_page.email}"></span></label>
+        <br>
+        <input type="text" name="userEmail" th:value = "${user.userEmail}" class="form-control">
+    </div>
+    <br>
+    <div class="card-text">
+        <label><span th:text="#{registration_page.first.name }"></span></label>
+        <br>
+        <input type="text" name="userFirstName" th:value = "${user.userFirstName}" class="form-control">
+    </div>
+    <br>
+    <div class="card-text">
+        <label><span th:text="#{registration_page.last.name }"></span></label>
+        <br>
+        <input type="text" name="userLastName" th:value = "${user.userLastName}" class="form-control">
+    </div>
+    <br>
+        <div class="card-text">
+            <label><span th:text="#{login_page.password}"></span></label>
+            <br>
+            <input type="text" name="userPassword" class="form-control">
+        </div>
+        <br>
+        <div class="card-text">
+            <label><span th:text="#{login_page.password.confirm}"></span></label>
+            <br>
+            <input type="text" name="userPasswordConfirm" class="form-control">
+        </div>
+        <br>
+        <button type="submit" class="btn btn-success" th:text="#{update_page.accept}"></button>
+        <br>
+    </form>
+</div>
+<form action="userProfile">
+<button type="submit" class="btn btn-danger" th:text="#{button.cancel}"></button>
+</form>
+</body>
+</html>

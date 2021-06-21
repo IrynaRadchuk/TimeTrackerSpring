@@ -1,9 +1,10 @@
 package com.example.model.repository;
 
 import com.example.model.UserActivity;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
-public interface UserActivityRepository extends CrudRepository<UserActivity, Long> {
+public interface UserActivityRepository extends JpaRepository<UserActivity, Long> {
+    Page<UserActivity> findAll(Pageable pageable);
 }
