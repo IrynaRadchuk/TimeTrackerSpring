@@ -1,5 +1,7 @@
 package com.example.model;
 
+import org.springframework.data.jpa.repository.Query;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -13,6 +15,11 @@ public class Category {
     private String categoryName;
 
     public Category() {
+    }
+
+    public Category(Long id, String categoryName) {
+        this.id = id;
+        this.categoryName = categoryName;
     }
 
     public Long getId() {

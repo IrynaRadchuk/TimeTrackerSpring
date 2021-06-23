@@ -6,7 +6,7 @@
 </head>
 <body>
 <header th:insert="headerAdmin :: headerAdmin"></header>
-<b> <h2  th:text="#{statistics_page.header}"></h2></b>
+<b> <h2  th:text="#{statistics_page.user.header}"></h2></b>
 <br>
 <table>
     <tr>
@@ -42,16 +42,16 @@
 </table>
 <div class="pagination-div">
     <span th:if="${userActivities.hasPrevious()}">
-        <a th:href="@{/tracker/statUsers(userActivities=${number-1},size=${size})}">Previous</a>
+        <a th:href="@{/tracker/statUsers(page=${number-1},size=${size})}">Previous</a>
     </span>
     <th:block th:each="i: ${#numbers.sequence(0, totalPages - 1)}">
         <span th:if="${number == i}" class="selected">[[${i}+1]]</span>
         <span th:unless="${number == i}">
-             <a th:href="@{/tracker/statUsers(userActivities=${i},size=${size})}">[[${i}+1]]</a>
+             <a th:href="@{/tracker/statUsers(page=${i},size=${size})}">[[${i}+1]]</a>
         </span>
     </th:block>
     <span th:if="${userActivities.hasNext()}">
-        <a th:href="@{/tracker/statUsers(userActivities=${number+1},size=${size})}">Next</a>
+        <a th:href="@{/tracker/statUsers(page=${number+1},size=${size})}">Next</a>
     </span>
 </div>
 </body>

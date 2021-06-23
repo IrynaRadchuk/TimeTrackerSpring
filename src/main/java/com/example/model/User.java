@@ -43,7 +43,15 @@ public class User {
         this.userPassword = userPassword;
         this.userFirstName = userFirstName;
         this.userLastName = userLastName;
-        this.role = new Role(1L,RoleName.USER);
+        this.role = new Role(RoleName.USER);
+    }
+
+    public User(String userEmail, String userFirstName, String userLastName, Role role) {
+        this.userEmail = userEmail;
+        this.userFirstName = userFirstName;
+        this.userLastName = userLastName;
+        this.role = role;
+        this.userPassword = "Qwerty123";
     }
 
     public Long getId() {

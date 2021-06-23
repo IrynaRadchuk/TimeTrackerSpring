@@ -11,6 +11,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
 import javax.validation.Validation;
@@ -67,10 +68,17 @@ public class GuestController {
 //            return "/tracker/registration";
 //        }
 //        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        User user = new User(userEmail,userPassword,userFirstName,userLastName);
+        User user = new User(userEmail, userPassword, userFirstName, userLastName);
 //        Set<ConstraintViolation<User>> validate = validator.validate(user);
 //        System.err.println(validate);
         userRepository.save(user);
         return "redirect:/tracker/login";
     }
-}
+        @GetMapping("/default")
+        public String defaultAfterLogin(HttpServletRequest request) {
+            if (request.isUserInRole("ROLE_ADMIN")) {
+                return "redirect:/tracker/adminRequests";
+            }
+            return "redirect:/tracker/schedule";
+        }
+    }

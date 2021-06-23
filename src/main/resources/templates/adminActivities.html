@@ -27,18 +27,18 @@
         <th></th>
         <th></th>
     </tr>
-    <form method="post" action="changeUser">
         <tr th:each ="el:${activities}">
-            <td th:text="${el?.Id}" aria-readonly="true">
-            </td>
-            <td th:text="${el?.activityName}">
-            </td>
-            <td th:text="${el?.category.Id}">
-            </td>
-            <td th:text="${el?.activityUa}">
-            </td>
+            <form method="post">
+            <td> <input type="text" name="id" th:value = "${el?.id}" readonly></td>
+            <td> <input type="text" name="activityName" th:value = "${el?.activityName}"></td>
+            <td> <input type="text" name="categoryId" th:value = "${el?.category.Id}"readonly></td>
+            <td> <input type="text" name="activityUa" th:value = "${el?.activityUa}"></td>
             <td>
-
+                <select name="categoryList" id="categoryList">
+                    <option th:selected = "${el?.category.categoryName}" th:text="${el?.category.categoryName}" ></option>
+                        <option th:each ="c:${categories}" th:value="${c?.categoryName}" th:text="${c?.categoryName}" >
+                        </option>
+                </select>
             </td>
             <td>
                 <button type="submit" class="btn btn-success" formaction="changeActivity" th:text="#{button.change}"></button>
@@ -48,29 +48,26 @@
             </td>
     </form>
     </tr>
-    <form method="post">
         <tr>
+            <form method="post">
             <td>
             </td>
             <td>
-                <input type="text" name="activityName">
+                <input type="text" name="activityAddName">
             </td>
             <td>
             </td>
             <td>
-                <input type="text" name="activityUa">
+                <input type="text" name="activityAddUa">
             </td>
             <td>
-                <!--                <select name="all_roles" id="all_roles">-->
-                <!--                    <c:forEach items="${all_roles}" var="role">-->
-                <!--                        <option value="${role}" name = "role" id="role">-->
-                <!--                            ${role}-->
-                <!--                        </option>-->
-                <!--                    </c:forEach>-->
-                <!--                </select>-->
+                <select name="categoryAdd">
+                    <option th:each ="c:${categories}" th:value="${c?.categoryName}" th:text="${c?.categoryName}" >
+                    </option>
+                </select>
             </td>
             <td>
-                <button type="submit" class="btn btn-success" formaction="addActivities" th:text="#{button.addition}"></button>
+                <button type="submit" class="btn btn-success" formaction="addActivity" th:text="#{button.addition}"></button>
             </td>
     </form>
     </tr>

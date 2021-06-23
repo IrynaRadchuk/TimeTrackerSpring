@@ -5,27 +5,43 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css">
 </head>
 <body>
-<header th:insert="headerGuest :: headerGuest"></header>
-<div class="container mt-5 ml-5">
-    <h2><b>Login Form</b></h2>
-    <h4>Please sign in to continue using Time Tracker</h4>
-    <h4>Not registered yet?<a href ="registration"> Sign Up</a></h4>
-    <form action="login" method = "post">
-        <label>Email</label>
-        <input type="text" name="user_email" placeholder="Enter Email" class="form-control">
-        <br>
-        <label>Password</label>
-        <input type="text" name="user_password" placeholder="Enter Password" class="form-control">
-        <br>
-        <button type="submit" class="btn btn-success">Sign In</button>
+<header th:insert="headerAdmin :: headerAdmin"></header>
+<b> <h2  th:text="#{admin_page.requests.header}"></h2></b>
+<table>
+    <tr>
+        <th>
+            <span th:text="#{admin_page.users.header0}"></span>
+        </th>
+        <th>
+            <span th:text="#{admin_page.users.header1}"></span>
+        </th>
+        <th>
+            <span th:text="#{admin_page.users.header2}"></span>
+        </th>
+        <th>
+            <span th:text="#{admin_page.users.header3}"></span>
+        </th>
+        <th>
+            <span th:text="#{admin_page.activities.header1}"></span>
+        </th>
+        <th></th>
+        <th></th>
+    </tr>
+        <tr th:each ="el:${activities}">
+            <form method="post">
+                <td> <input type="text" name="userId" th:value = "${el?.user.Id}" readonly></td>
+                <td> <input type="text" name="userEmail" th:value = "${el?.user.userEmail}" readonly></td>
+                <td> <input type="text" name="userFirstName" th:value = "${el?.user.userFirstName}" readonly></td>
+                <td> <input type="text" name="userLastName" th:value = "${el?.user.userLastName}" readonly></td>
+                <td> <input type="text" name="activityName" th:value = "${el?.activity.activityName}" readonly></td>
+            <td>
+                <button type="submit" class="btn btn-success" formaction="approveRequest" th:text="#{button.approve}"></button>
+            </td>
+            <td>
+                <button type="submit" class="btn btn-danger" formaction="denyRequest" th:text="#{button.deny}"></button>
+            </td>
     </form>
-    <br>
-    <form action="index">
-        <button type="submit" class="btn btn-danger">Cancel</button>
-    </form>
-</div>
-<div th:each ="el:${users}">
-    <h3 th:text="${el?.userEmail}"></h3>
-</div>
+    </tr>
+</table>
 </body>
 </html>

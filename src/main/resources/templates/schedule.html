@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="headerUser :: headerUser"></header>
+<b> <h2  th:text="#{show_page.header}"></h2></b>
+<table>
+    <tr>
+        <th>
+            <span th:text="#{show_page.header0}"></span>
+        </th>
+        <th>
+            <span th:text="#{show_page.header1}"></span>
+        </th>
+        <th>
+            <span th:text="#{show_page.header2}"></span>
+        </th>
+        <th></th>
+    </tr>
+        <tr th:each ="el:${userActivity}">
+            <form method="post">
+            <td> <input type="date" name="activityDate" th:value = "${el?.activityDate}"></td>
+            <td>
+                <select name="activityList" id="activityList">
+                    <option th:selected = "${el?.activity.activityName}">
+                    <span th:if="${#locale.toString()}=='uk'"
+                    th:value="${el?.activity.activityUa}"
+                    th:text="${el?.activity.activityUa}"></span>
+                    <span th:if="${#locale.toString()}!='uk'"
+                          th:value="${el?.activity.activityName}"
+                          th:text="${el?.activity.activityName}" ></span>
+                    </option>
+                    <option th:each ="c:${activityApproved}">
+                            <span th:if="${#locale.toString()}=='uk'"
+                            th:value="${c?.activity.activityUa}"
+                            th:text="${c?.activity.activityUa}"></span>
+                        <span th:if="${#locale.toString()}!='uk'"
+                            th:value="${c?.activity.activityName}"
+                            th:text="${c?.activity.activityName}" ></span>
+                    </option>
+                </select>
+                </td>
+            <td> <input type="text" name="activityDuration" th:value = "${el?.activityDuration}"></td>
+            <td>
+                <button type="submit" class="btn btn-danger" formaction="deleteSchedule" th:text="#{button.delete}"></button>
+            </td>
+    </form>
+    </tr>
+        <tr>
+            <form method="post">
+            <td>
+                <input type="date" name="activityDateAdd">
+            </td>
+            <td>
+                <select name="activityNameAdd">
+                    <option th:each ="c:${activityApproved}">
+                    <span th:if="${#locale.toString()}=='uk'"
+                          th:value="${c?.activity.activityUa}"
+                          th:text="${c?.activity.activityUa}"></span>
+                    <span th:if="${#locale.toString()}!='uk'"
+                          th:value="${c?.activity.activityName}"
+                          th:text="${c?.activity.activityName}" ></span>
+                    </option>
+                </select>
+            </td>
+            <td>
+                <input type="text" name="activityDurationAdd">
+            </td>
+            <td>
+                <button type="submit" class="btn btn-success" formaction="addSchedule" th:text="#{button.addition}"></button>
+            </td>
+    </form>
+    </tr>
+</table>
+</body>
+</html>

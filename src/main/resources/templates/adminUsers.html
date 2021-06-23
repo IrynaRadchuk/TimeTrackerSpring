@@ -27,51 +27,48 @@
         <th></th>
         <th></th>
     </tr>
-        <form method="post" action="changeUser">
         <tr th:each ="el:${users}">
-            <td th:text="${el?.Id}" aria-readonly="true">
-            </td>
-            <td th:text="${el?.userEmail}">
-            </td>
-            <td th:text="${el?.userFirstName}">
-            </td>
-            <td th:text="${el?.userLastName}">
-            </td>
+            <form method="post">
+            <td> <input type="text" name="id" th:value = "${el?.id}" readonly></td>
+            <td> <input type="text" name="userEmail" th:value = "${el?.userEmail}"></td>
+            <td> <input type="text" name="userFirstName" th:value = "${el?.userFirstName}"></td>
+            <td> <input type="text" name="userLastName" th:value = "${el?.userLastName}"></td>
             <td>
-
+                <select name="roleList" id="roleList">
+                    <option th:selected = "${el?.role.roleName}" th:text="${el?.role.roleName}" ></option>
+                    <option value = "USER" th:text="USER"></option>
+                    <option value = "ADMIN" th:text="ADMIN"></option>
+                </select>
             </td>
             <td>
                 <button type="submit" class="btn btn-success" formaction="changeUser" th:text="#{button.change}"></button>
             </td>
             <td>
-                <button type="submit" class="btn btn-danger" formaction="profile" th:text="#{button.delete}"></button>
+                <button type="submit" class="btn btn-danger" formaction="deleteUser" th:text="#{button.delete}"></button>
             </td>
-        </form>
-    </tr>
-    <form method="post">
+            </form>
+        </tr>
         <tr>
+            <form method="post">
             <td>
             </td>
             <td>
-                <input type="text" name="userEmail">
+                <input type="text" name="userAddEmail">
             </td>
             <td>
-                <input type="text" name="userFirstName">
+                <input type="text" name="userAddFirstName">
             </td>
             <td>
-                <input type="text" name="userLastName">
+                <input type="text" name="userAddLastName">
             </td>
             <td>
-<!--                <select name="all_roles" id="all_roles">-->
-<!--                    <c:forEach items="${all_roles}" var="role">-->
-<!--                        <option value="${role}" name = "role" id="role">-->
-<!--                            ${role}-->
-<!--                        </option>-->
-<!--                    </c:forEach>-->
-<!--                </select>-->
+            <select name="roleAdd" id="roleAdd">
+                <option value = "USER" th:text="USER"></option>
+                <option value = "ADMIN" th:text="ADMIN"></option>
+            </select>
             </td>
             <td>
-                <button type="submit" class="btn btn-success" formaction="addUsers" th:text="#{button.addition}"></button>
+                <button type="submit" class="btn btn-success" formaction="addUser" th:text="#{button.addition}"></button>
             </td>
     </form>
     </tr>

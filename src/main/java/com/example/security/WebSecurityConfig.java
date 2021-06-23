@@ -32,16 +32,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/", "/js/**", "/img/**", "/css/**", "/tracker/error", "/tracker/index", "/tracker/login", "/tracker/registration").permitAll()
-                .antMatchers("/tracker/adminUsers").hasRole(RoleName.USER.name())
-                .antMatchers("/tracker/adminActivities").hasRole("ADMIN")
-//                .antMatchers("/login").hasAnyRole("USER","ADMIN")
+                .antMatchers("/", "/js/**", "/img/**", "/css/**", "/tracker/error").permitAll()
+                .antMatchers("/tracker/index", "/tracker/login", "/tracker/registration").anonymous()
+                .antMatchers("/tracker/adminUsers", "/tracker/adminActivities", "/tracker/statUsers", "/tracker/statActivities", "/tracker/adminRequests").hasRole(RoleName.ADMIN.name())
+                .antMatchers("/tracker/userRequests", "/tracker/schedule","/tracker/userProfile","/tracker/updateProfile").hasRole(RoleName.USER.name())
                 .anyRequest().authenticated()
 //        .and()
 //        .formLogin()
                 .and()
-                .formLogin().loginPage("/tracker/login").defaultSuccessUrl("/tracker/adminUsers")
-                .permitAll()
+                .formLogin().loginPage("/tracker/login").defaultSuccessUrl("/tracker/default")
                 .and()
                 .logout().logoutUrl("/tracker/logout")
                 .permitAll()
@@ -58,11 +57,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .permitAll();
 
     }
+
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserDetailServiceImpl();
     }
-
 
 
     @Bean
