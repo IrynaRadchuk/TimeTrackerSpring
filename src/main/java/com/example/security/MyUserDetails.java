@@ -60,4 +60,17 @@ public class MyUserDetails implements UserDetails {
     public User getUser() {
         return user;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MyUserDetails)) return false;
+        MyUserDetails that = (MyUserDetails) o;
+        return Objects.equals(user, that.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(user);
+    }
 }

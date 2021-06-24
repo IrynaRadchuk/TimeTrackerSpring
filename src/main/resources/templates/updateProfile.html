@@ -9,7 +9,7 @@
 <header th:insert="headerUser :: headerUser"></header>
 <b> <h2  th:text="#{update_page.header}"></h2></b>
 <div class="card-body">
-    <form action="/tracker/updateProfile" method="post">
+    <form  th:action="@{/tracker/updateProfile}" th:object="${user}" method="post">
     <div class="card-text">
         <label><span th:text="#{login_page.email}"></span></label>
         <br>
@@ -31,13 +31,13 @@
         <div class="card-text">
             <label><span th:text="#{login_page.password}"></span></label>
             <br>
-            <input type="text" name="userPassword" class="form-control">
+            <input type="password" name="userPassword" class="form-control">
         </div>
         <br>
         <div class="card-text">
             <label><span th:text="#{login_page.password.confirm}"></span></label>
             <br>
-            <input type="text" name="userPasswordConfirm" class="form-control">
+            <input type="password" name="userPasswordConfirm" class="form-control">
         </div>
         <br>
         <button type="submit" class="btn btn-success" th:text="#{update_page.accept}"></button>

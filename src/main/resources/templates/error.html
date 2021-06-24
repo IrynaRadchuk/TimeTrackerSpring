@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="/css/background.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<br>
+<span th:text="#{lang.change}"></span>:
+<select id="locales">
+    <option value=""></option>
+    <option value="en" th:text="#{lang.en}"></option>
+    <option value="uk" th:text="#{lang.uk}"></option>
+</select>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#locales").change(function () {
+        var selectedOption = $('#locales').val();
+        if (selectedOption != ''){
+            window.location.replace('?lang=' + selectedOption);
+        }
+    });
+});
+
+    </script>
+</div>
+<br>
+<h1 th:text="#{error.occur.page}"></h1>
+</body>
+</html>

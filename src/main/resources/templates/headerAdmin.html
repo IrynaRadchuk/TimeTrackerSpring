@@ -17,6 +17,14 @@
             <a class="w3-button w3-bar-item" href="logout" th:text="#{navbar.signout}"></a>
         </nav>
     </div>
+    <div>
+        <div th:if="${not #lists.isEmpty(errors)}">
+            <h3 th:each ="c:${errors}" th:value="${c}" th:text="${c}" class="text-danger" ></h3>
+        </div>
+        <div th:if="${not #lists.isEmpty(messages)}">
+            <h3 th:each ="c:${messages}" th:value="${c}" th:text="${c}" class="text-success"></h3>
+        </div>
+    </div>
     <br>
     <span th:text="#{lang.change}"></span>:
     <select id="locales">

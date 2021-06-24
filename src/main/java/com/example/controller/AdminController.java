@@ -7,12 +7,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -68,7 +67,6 @@ public class AdminController {
         Pageable sortedByDateDesc =
                 PageRequest.of(page, size, Sort.by("activityDate").descending());
         Page<UserActivity> onePageActivities = userActivityRepository.findAll(sortedByDateDesc);
-        System.out.println(onePageActivities);
         model.addAttribute("number", onePageActivities.getNumber());
         model.addAttribute("totalPages", onePageActivities.getTotalPages());
         model.addAttribute("totalElements", onePageActivities.getTotalElements());
@@ -89,7 +87,6 @@ public class AdminController {
     public String approveRequest(@RequestParam Long userId,
                                  @RequestParam String activityName,
                                  Map<String, Object> model) {
-        System.out.println(userId);
         allowedActivityRepository.approveActivity(userId, activityName);
         return "redirect:adminRequests";
     }
