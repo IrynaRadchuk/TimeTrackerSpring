@@ -1,6 +1,5 @@
 package com.example.model.repository;
 
-import com.example.model.AllowedActivity;
 import com.example.model.UserActivity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -7,10 +7,13 @@ import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 public class ActivityScheduleDTO {
+
     @NotBlank(message = "Add date")
     private String activityDateAdd;
+
     @NotBlank(message = "Add activity name")
     private String activityNameAdd;
+
     @NotNull(message = "Add duration time (hrs)")
     @Min(value = 1, message = "Time for activity cannot be less then 1 hour")
     @Max(value = 8, message = "Time for activity cannot exceed 8 hours")

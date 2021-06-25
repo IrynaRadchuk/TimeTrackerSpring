@@ -1,6 +1,5 @@
 package com.example.security;
 
-import com.example.model.Role;
 import com.example.model.RoleName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
@@ -13,16 +12,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
-
-import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
@@ -36,7 +29,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/js/**", "/img/**", "/css/**", "/tracker/error").permitAll()
                 .antMatchers("/tracker/index", "/tracker/login", "/tracker/registration").anonymous()
                 .antMatchers("/tracker/adminUsers", "/tracker/adminActivities", "/tracker/statUsers", "/tracker/statActivities", "/tracker/adminRequests", "/tracker/logout").hasRole(RoleName.ADMIN.name())
-                .antMatchers("/tracker/userRequests", "/tracker/schedule","/tracker/userProfile","/tracker/updateProfile", "/tracker/logout").hasRole(RoleName.USER.name())
+                .antMatchers("/tracker/userRequests", "/tracker/schedule", "/tracker/userProfile", "/tracker/updateProfile", "/tracker/logout").hasRole(RoleName.USER.name())
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage("/tracker/login").defaultSuccessUrl("/tracker/default")
@@ -52,14 +45,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionRegistry(sessionRegistry());
 
     }
+
     @Bean
     public static ServletListenerRegistrationBean httpSessionEventPublisher() {
         return new ServletListenerRegistrationBean(new HttpSessionEventPublisher());
     }
+
     @Bean(name = "sessionRegistry")
     public SessionRegistry sessionRegistry() {
         return new SessionRegistryImpl();
     }
+
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserDetailServiceImpl();

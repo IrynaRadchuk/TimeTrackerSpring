@@ -6,18 +6,23 @@ import javax.validation.constraints.Pattern;
 import java.util.Objects;
 
 public class UserUpdateDto {
+
     @NotBlank(message = "Email is mandatory")
     @Email(message = "Wrong Email format")
     private String userEmail;
+
     @NotBlank(message = "Password is mandatory")
-    @Pattern(regexp="^.{6,}$", message = "Wrong Password format")
+    @Pattern(regexp = "^.{6,}$", message = "Wrong Password format")
     private String userPassword;
-    @Pattern(regexp="^[A-Z][a-z]{1,20}$", message = "Wrong First Name format")
+
+    @Pattern(regexp = "^[A-Z][a-z]{1,20}$", message = "Wrong First Name format")
     @NotBlank(message = "First Name is mandatory")
     private String userFirstName;
-    @Pattern(regexp="^[A-Z][a-z]{1,20}$", message = "Wrong Last Name format")
+
+    @Pattern(regexp = "^[A-Z][a-z]{1,20}$", message = "Wrong Last Name format")
     @NotBlank(message = "Last Name is mandatory")
     private String userLastName;
+
     @NotBlank(message = "Password is mandatory")
     private String userPasswordConfirm;
 

@@ -4,6 +4,7 @@ import com.example.model.Activity;
 import com.example.model.AllowedActivity;
 
 import java.util.List;
+import java.util.Objects;
 
 public class UserRequestsDTO {
     private List<AllowedActivity> allowedActivity;
@@ -28,5 +29,19 @@ public class UserRequestsDTO {
 
     public void setActivity(List<Activity> activity) {
         this.activity = activity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserRequestsDTO)) return false;
+        UserRequestsDTO that = (UserRequestsDTO) o;
+        return Objects.equals(allowedActivity, that.allowedActivity) &&
+                Objects.equals(activity, that.activity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(allowedActivity, activity);
     }
 }

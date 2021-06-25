@@ -1,8 +1,12 @@
 package com.example.controller;
 
-import com.example.model.*;
+import com.example.exception.RecordExistException;
+import com.example.model.Activity;
+import com.example.model.AllowedActivity;
+import com.example.model.User;
+import com.example.model.UserActivity;
 import com.example.model.dto.*;
-import com.example.model.repository.*;
+import com.example.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
@@ -22,44 +26,44 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
 public class AdminController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
-    private CategoryRepository categoryRepository;
+    private ActivityService activityService;
 
     @Autowired
-    private ActivityRepository activityRepository;
+    private AllowedActivityService allowedActivityService;
 
     @Autowired
-    private UserActivityRepository userActivityRepository;
+    private UserActivityService userActivityService;
 
     @Autowired
-    private AllowedActivityRepository allowedActivityRepository;
+    private CategoryService categoryService;
+
 
     @GetMapping("/tracker/adminUsers")
     public String adminUsers(Model model) {
-        Iterable<User> users = userRepository.findAll();
+        Iterable<User> users = userService.usersFind();
         model.addAttribute("users", users);
         return "adminUsers";
     }
 
     @GetMapping("/tracker/adminActivities")
     public String adminActivities(Model model) {
-        ActivityCategoryDTO activityCategoryDTO = new ActivityCategoryDTO(activityRepository.findAll(), categoryRepository.findAll());
+        ActivityCategoryDTO activityCategoryDTO = new ActivityCategoryDTO(activityService.activities(), categoryService.categories());
         model.addAttribute("activityCategory", activityCategoryDTO);
         return "adminActivities";
     }
 
     @GetMapping("/tracker/statActivities")
     public String statActivities(Model model) {
-        List<Activity> activityStat = activityRepository.activityWithUsersCount();
+        List<Activity> activityStat = activityService.activityStat();
         model.addAttribute("activityStat", activityStat);
         return "statActivities";
     }
@@ -70,7 +74,7 @@ public class AdminController {
         size = Objects.isNull(size) || size == 0 ? 10 : size;
         Pageable sortedByDateDesc =
                 PageRequest.of(page, size, Sort.by("activityDate").descending());
-        Page<UserActivity> onePageActivities = userActivityRepository.findAll(sortedByDateDesc);
+        Page<UserActivity> onePageActivities = userActivityService.onePageActivities(sortedByDateDesc);
         model.addAttribute("number", onePageActivities.getNumber());
         model.addAttribute("totalPages", onePageActivities.getTotalPages());
         model.addAttribute("totalElements", onePageActivities.getTotalElements());
@@ -82,7 +86,7 @@ public class AdminController {
 
     @GetMapping("/tracker/adminRequests")
     public String adminRequests(Model model) {
-        List<AllowedActivity> activities = allowedActivityRepository.activitiesPending();
+        List<AllowedActivity> activities = allowedActivityService.activitiesPending();
         model.addAttribute("activities", activities);
         return "adminRequests";
     }
@@ -90,7 +94,7 @@ public class AdminController {
     @PostMapping("/tracker/approveRequest")
     public String approveRequest(@ModelAttribute("request") @Valid AdminRequestDTO adminRequestDTO,
                                  RedirectAttributes redirect) {
-        allowedActivityRepository.approveActivity(adminRequestDTO.getUserId(), adminRequestDTO.getActivityName());
+        allowedActivityService.approveActivity(adminRequestDTO);
         redirect.addFlashAttribute("messages", "Request successfully approved");
         return "redirect:adminRequests";
     }
@@ -98,7 +102,7 @@ public class AdminController {
     @PostMapping("/tracker/denyRequest")
     public String denyRequest(@ModelAttribute("request") @Valid AdminRequestDTO adminRequestDTO,
                               RedirectAttributes redirect) {
-        allowedActivityRepository.denyActivity(adminRequestDTO.getUserId(), adminRequestDTO.getActivityName());
+        allowedActivityService.denyActivity(adminRequestDTO);
         redirect.addFlashAttribute("messages", "Request successfully denied");
         return "redirect:adminRequests";
     }
@@ -113,21 +117,20 @@ public class AdminController {
             redirect.addFlashAttribute("errors", collect);
             return "redirect:adminUsers";
         }
-        Optional<User> userFromDB = userRepository.findByUserEmail(adminUserAddDTO.getUserAddEmail());
-        if (userFromDB.isPresent()){
-            redirect.addFlashAttribute("errors", "This email is already in use");
+        try {
+            userService.userAddByAdmin(adminUserAddDTO);
+            redirect.addFlashAttribute("messages", "User successfully added");
+            return "redirect:adminUsers";
+        } catch (RecordExistException e) {
+            redirect.addFlashAttribute("errors", e.getMessage());
             return "redirect:adminUsers";
         }
-        Role role = new Role(RoleName.valueOf(adminUserAddDTO.getRoleAdd()));
-        User user = new User(adminUserAddDTO.getUserAddEmail(), adminUserAddDTO.getUserAddFirstName(), adminUserAddDTO.getUserAddLastName(), role);
-        userRepository.save(user);
-        redirect.addFlashAttribute("messages", "User successfully added");
-        return "redirect:adminUsers";
+
     }
 
     @PostMapping("/tracker/deleteUser")
     public String deleteUser(@RequestParam Long id) {
-        userRepository.deleteById(id);
+        userService.deleteUserById(id);
         return "redirect:adminUsers";
     }
 
@@ -141,19 +144,14 @@ public class AdminController {
             redirect.addFlashAttribute("errors", collect);
             return "redirect:adminUsers";
         }
-        Optional<User> userFromDB = userRepository.findByUserEmail(adminUserDTO.getUserEmail());
-        if (userFromDB.isPresent()){
-            redirect.addFlashAttribute("errors", "This email is already in use");
+        try {
+            userService.userChangeByAdmin(adminUserDTO);
+            redirect.addFlashAttribute("messages", "User successfully updated");
+            return "redirect:adminUsers";
+        } catch (RecordExistException e) {
+            redirect.addFlashAttribute("errors", e.getMessage());
             return "redirect:adminUsers";
         }
-        User user = userRepository.findById(adminUserDTO.getId()).orElseThrow();
-        user.setUserEmail(adminUserDTO.getUserEmail());
-        user.setUserFirstName(adminUserDTO.getUserFirstName());
-        user.setUserLastName(adminUserDTO.getUserLastName());
-        user.setRole(new Role(RoleName.valueOf(adminUserDTO.getRoleList())));
-        userRepository.save(user);
-        redirect.addFlashAttribute("messages", "User successfully updated");
-        return "redirect:adminUsers";
     }
 
 
@@ -167,21 +165,19 @@ public class AdminController {
             redirect.addFlashAttribute("errors", collect);
             return "redirect:adminActivities";
         }
-        Optional<Activity> activityFromDB = activityRepository.findByActivityName(activityAddDTO.getActivityAddName());
-        if (activityFromDB.isPresent()){
-            redirect.addFlashAttribute("errors", "This activity already exists");
+        try {
+            activityService.addActivityByAdmin(activityAddDTO);
+            redirect.addFlashAttribute("messages", "Activity successfully added");
+            return "redirect:adminActivities";
+        } catch (RecordExistException e) {
+            redirect.addFlashAttribute("errors", e.getMessage());
             return "redirect:adminActivities";
         }
-        Category category = categoryRepository.categoryIdByName(activityAddDTO.getCategoryAdd());
-        Activity activity = new Activity(activityAddDTO.getActivityAddName(), activityAddDTO.getActivityAddUa(), category);
-        activityRepository.save(activity);
-        redirect.addFlashAttribute("messages", "Activity successfully added");
-        return "redirect:adminActivities";
     }
 
     @PostMapping("/tracker/deleteActivity")
     public String deleteActivity(@RequestParam Long id, RedirectAttributes redirect) {
-        activityRepository.deleteById(id);
+        activityService.deleteActivityByAdmin(id);
         redirect.addFlashAttribute("messages", "Activity successfully deleted");
         return "redirect:adminActivities";
     }
@@ -196,18 +192,14 @@ public class AdminController {
             redirect.addFlashAttribute("errors", collect);
             return "redirect:adminActivities";
         }
-        Optional<Activity> activityFromDB = activityRepository.findByActivityName(activityChangeDTO.getActivityName());
-        if (activityFromDB.isPresent()){
-            redirect.addFlashAttribute("errors", "This activity already exists");
+        try {
+            activityService.changeActivityByAdmin(activityChangeDTO);
+            redirect.addFlashAttribute("messages", "Activity successfully changed");
+            return "redirect:adminActivities";
+        } catch (RecordExistException e) {
+            redirect.addFlashAttribute("errors", e.getMessage());
             return "redirect:adminActivities";
         }
-        Category category = categoryRepository.categoryIdByName(activityChangeDTO.getCategoryList());
-        Activity activity = activityRepository.findById(activityChangeDTO.getId()).orElseThrow();
-        activity.setActivityName(activityChangeDTO.getActivityName());
-        activity.setActivityUa(activityChangeDTO.getActivityUa());
-        activity.setCategory(category);
-        activityRepository.save(activity);
-        redirect.addFlashAttribute("messages", "Activity successfully changed");
-        return "redirect:adminActivities";
+
     }
 }

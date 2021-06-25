@@ -5,15 +5,16 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-@Entity @IdClass(value = UserActivity.class)
+@Entity
+@IdClass(value = UserActivity.class)
 @Table(name = "user_activity")
 public class UserActivity implements Serializable {
     @Id
-    @OneToOne (fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
     @Id
-    @OneToOne (fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "activity_id")
     private Activity activity;
     @Column(name = "activity_date")

@@ -15,5 +15,5 @@ public interface ActivityRepository extends CrudRepository<Activity, Long> {
     @Query(value = "select * from activity where activity_name not in(select activity_name from activity left join user_allowed_activity on activity.activity_id = user_allowed_activity.activity_id where user_id=40)||activity_ua not in(select activity_ua from activity left join user_allowed_activity on activity.activity_id = user_allowed_activity.activity_id where user_id=:userId)", nativeQuery = true)
     List<Activity> absent(@Param("userId") Long userId);
 
-    Optional<Activity> findByActivityName (String name);
+    Optional<Activity> findByActivityName(String name);
 }

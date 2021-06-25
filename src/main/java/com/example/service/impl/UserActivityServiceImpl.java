@@ -4,10 +4,11 @@ import com.example.exception.RecordExistException;
 import com.example.model.UserActivity;
 import com.example.model.dto.ActivityScheduleDTO;
 import com.example.model.dto.ActivityScheduleDeleteDTO;
-import com.example.model.repository.AllowedActivityRepository;
 import com.example.model.repository.UserActivityRepository;
 import com.example.service.UserActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -39,5 +40,10 @@ public class UserActivityServiceImpl implements UserActivityService {
                 activityScheduleDTO.getActivityNameAdd(),
                 LocalDate.parse(activityScheduleDTO.getActivityDateAdd()),
                 activityScheduleDTO.getActivityDurationAdd());
+    }
+
+    @Override
+    public Page<UserActivity> onePageActivities(Pageable pageable) {
+        return userActivityRepository.findAll(pageable);
     }
 }

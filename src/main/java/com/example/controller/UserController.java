@@ -29,12 +29,16 @@ import java.util.stream.Collectors;
 
 @Controller
 public class UserController {
+
     @Autowired
     private UserService userService;
+
     @Autowired
     private ActivityService activityService;
+
     @Autowired
     private AllowedActivityService allowedActivityService;
+
     @Autowired
     private UserActivityService userActivityService;
 

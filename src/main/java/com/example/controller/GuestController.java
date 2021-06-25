@@ -22,17 +22,18 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/tracker")
 public class GuestController {
+
     @Autowired
     private UserService service;
 
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/index")
+
     public String greeting() {
         return "greeting";
     }
-
-    @Autowired
-    private UserRepository userRepository;
 
     @GetMapping("/login")
     public String login() {
@@ -43,7 +44,6 @@ public class GuestController {
     public String registration() {
         return "registration";
     }
-
 
     @PostMapping("/registration")
     public String registrationPost(@ModelAttribute("users") @Valid UserRegisterDTO userRegisterDTO,

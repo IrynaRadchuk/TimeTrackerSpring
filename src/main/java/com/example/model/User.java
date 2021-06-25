@@ -1,40 +1,26 @@
 package com.example.model;
 
-import org.hibernate.validator.constraints.UniqueElements;
-
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
+import java.util.Objects;
 
 @Entity
 @Table(name = "user")
 public class User {
     @Id
-    @GeneratedValue (strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
     private Long id;
     @Column(name = "user_email")
-    @NotBlank(message = "Email is mandatory")
-    @Email (message = "Wrong Email format")
     private String userEmail;
     @Column(name = "user_password")
-//    @Pattern(regexp="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{6,50}$", message = "Wrong Password format")
-    @NotBlank(message = "Password is mandatory")
     private String userPassword;
     @Column(name = "user_first_name")
-    @Pattern(regexp="^[A-Z][a-z]{1,20}$", message = "Wrong First Name format")
-    @NotBlank(message = "First Name is mandatory")
     private String userFirstName;
     @Column(name = "user_last_name")
-    @Pattern(regexp="^[A-Z][a-z]{1,20}$", message = "Wrong Last Name format")
-    @NotBlank(message = "Last Name is mandatory")
     private String userLastName;
-
-    @ManyToOne (fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
-
 
     public User() {
     }
@@ -101,5 +87,23 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) &&
+                Objects.equals(userEmail, user.userEmail) &&
+                Objects.equals(userPassword, user.userPassword) &&
+                Objects.equals(userFirstName, user.userFirstName) &&
+                Objects.equals(userLastName, user.userLastName) &&
+                Objects.equals(role, user.role);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, userEmail, userPassword, userFirstName, userLastName, role);
     }
 }

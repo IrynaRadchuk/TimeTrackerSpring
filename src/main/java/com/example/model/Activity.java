@@ -14,13 +14,11 @@ public class Activity {
     private String activityName;
     @Column(name = "activity_ua")
     private String activityUa;
-
-    @ManyToOne (fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;
     @Column(name = "user_quantity")
     private Integer users;
-
 
     public Activity() {
     }
@@ -63,6 +61,14 @@ public class Activity {
         this.activityUa = activityUa;
     }
 
+    public Integer getUsers() {
+        return users;
+    }
+
+    public void setUsers(Integer users) {
+        this.users = users;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -85,13 +91,5 @@ public class Activity {
                 ", activityName='" + activityName + '\'' +
                 ", activityUa='" + activityUa + '\'' +
                 '}';
-    }
-
-    public Integer getUsers() {
-        return users;
-    }
-
-    public void setUsers(Integer users) {
-        this.users = users;
     }
 }

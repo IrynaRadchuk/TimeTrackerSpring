@@ -4,15 +4,16 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
-@Entity @IdClass(value = AllowedActivity.class)
+@Entity
+@IdClass(value = AllowedActivity.class)
 @Table(name = "user_allowed_activity")
 public class AllowedActivity implements Serializable {
     @Id
-    @OneToOne (fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
     @Id
-    @OneToOne (fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "activity_id")
     private Activity activity;
     @Column(name = "status")
