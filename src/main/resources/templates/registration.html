@@ -8,19 +8,15 @@
 <body>
 <header th:insert="headerGuest :: headerGuest"></header>
 <div class="container">
-    <div th:if="${not #lists.isEmpty(errors)}">
-        <span th:each ="c:${errors}" th:value="${c}" th:text="${c}"></span>
-    </div>
     <h2 th:text="#{registration_page.header}"></h2>
     <h4 th:text="#{registration_page.subheader1}"></h4>
     <h4 th:text="#{registration_page.subheader2}"><a href="registration" th:text="#{navbar.signin}"></a></h4>
-    <form action="registration" method="post" modelAttribute="user">
+    <form action="registration" method="post" th:object="${users}">
         <label><span th:text="#{login_page.email}"></span></label>
         <input type="text" name="userEmail" placeholder="Enter Email" class="form-control">
         <br>
         <label><span th:text="#{login_page.password}"></span></label>
         <input type="password"  name="userPassword" placeholder="Enter Password" class="form-control" >
-<!--        <span th:if="${fields?.hasErrors('userPassword')}" th:errors="*{userPassword}" class="invalid-feedback"> Pass err</span>-->
         <br>
         <label><span th:text="#{registration_page.first.name}"></span></label>
         <input type="text" name="userFirstName" placeholder="Enter First Name" class="form-control">

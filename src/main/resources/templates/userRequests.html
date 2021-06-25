@@ -14,7 +14,7 @@
                 </b>
     </div>
     <br>
-    <ul th:each="el:${activity}">
+    <ul th:each="el:${activityList.allowedActivity}">
             <li>
                 <span th:if="${#locale.toString()}=='uk'"
                       th:value="${el?.activity.activityUa}"
@@ -27,8 +27,8 @@
     </ul>
     <form method="post">
     <select name="requestActivity">
-        <option th:if="${#locale.toString()}=='uk'" th:each ="i:${allActivitiesUa}" th:value="${i}" th:text="${i}" ></option>
-        <option th:if="${#locale.toString()}!='uk'" th:each ="j:${allActivities}" th:value="${j}" th:text="${j}" ></option>
+        <option th:if="${#locale.toString()}=='uk'" th:each ="i:${activityList.activity}" th:value="${i?.activityUa}" th:text="${i?.activityUa}" ></option>
+        <option th:if="${#locale.toString()}!='uk'" th:each ="j:${activityList.activity}" th:value="${j?.activityName}" th:text="${j?.activityName}" ></option>
     </select>
         <button type="submit" class="btn btn-success" formaction="request" th:text="#{activities_page.request}"></button>
     </form>

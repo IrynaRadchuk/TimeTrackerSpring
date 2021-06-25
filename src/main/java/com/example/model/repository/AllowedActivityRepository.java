@@ -7,12 +7,10 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface AllowedActivityRepository extends CrudRepository<AllowedActivity, Long> {
-    //    @Query(value = "SELECT count(user_id) from user_allowed_activity group by activity_id", nativeQuery = true)
-//    List<Integer> countUsers();
+
     @Query(value = "SELECT * FROM user_allowed_activity where user_id = :userId", nativeQuery = true)
     List<AllowedActivity> activitiesByUser(@Param("userId") Long userId);
 

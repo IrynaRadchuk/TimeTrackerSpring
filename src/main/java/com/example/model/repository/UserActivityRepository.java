@@ -19,6 +19,9 @@ public interface UserActivityRepository extends JpaRepository<UserActivity, Long
     @Query(value = "SELECT * FROM user_activity where user_id = :userId", nativeQuery = true)
     List<UserActivity> activitiesByUser(@Param("userId") Long userId);
 
+    @Query(value = "SELECT * FROM user_activity where user_id = :userId and activity_id= (select activity_id from activity where activity_name = :activityName||activity_ua = :activityName) and activity_date = :date", nativeQuery = true)
+    UserActivity activityByUserDate(@Param("userId") Long userId, @Param("activityName") String activityName, @Param("date") LocalDate date);
+
     @Modifying
     @Transactional
     @Query(value = "insert into user_activity (user_id, activity_id, activity_date, activity_duration) values (:userId,(select activity_id from activity where activity_name = :activityName||activity_ua = :activityName),:date,:duration)", nativeQuery = true)

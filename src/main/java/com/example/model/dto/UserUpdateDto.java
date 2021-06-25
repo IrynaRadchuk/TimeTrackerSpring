@@ -3,6 +3,7 @@ package com.example.model.dto;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.util.Objects;
 
 public class UserUpdateDto {
     @NotBlank(message = "Email is mandatory")
@@ -68,4 +69,20 @@ public class UserUpdateDto {
         this.userPasswordConfirm = userPasswordConfirm;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserUpdateDto)) return false;
+        UserUpdateDto that = (UserUpdateDto) o;
+        return Objects.equals(userEmail, that.userEmail) &&
+                Objects.equals(userPassword, that.userPassword) &&
+                Objects.equals(userFirstName, that.userFirstName) &&
+                Objects.equals(userLastName, that.userLastName) &&
+                Objects.equals(userPasswordConfirm, that.userPasswordConfirm);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userEmail, userPassword, userFirstName, userLastName, userPasswordConfirm);
+    }
 }

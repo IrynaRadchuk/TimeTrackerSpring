@@ -28,7 +28,7 @@
         <th></th>
     </tr>
         <tr th:each ="el:${users}">
-            <form method="post">
+            <form method="post" th:object="${adminUsers}">
             <td> <input type="text" name="id" th:value = "${el?.id}" readonly></td>
             <td> <input type="text" name="userEmail" th:value = "${el?.userEmail}"></td>
             <td> <input type="text" name="userFirstName" th:value = "${el?.userFirstName}"></td>
@@ -49,7 +49,7 @@
             </form>
         </tr>
         <tr>
-            <form method="post">
+            <form method="post" th:object="${addUsers}">
             <td>
             </td>
             <td>

@@ -1,18 +1,17 @@
 package com.example.controller;
 
-import com.example.model.AllowedActivity;
+import com.example.exception.RecordExistException;
+import com.example.exception.TimeTrackerException;
 import com.example.model.User;
-import com.example.model.UserActivity;
-import com.example.model.dto.UserUpdateDto;
-import com.example.model.repository.ActivityRepository;
-import com.example.model.repository.AllowedActivityRepository;
-import com.example.model.repository.UserActivityRepository;
-import com.example.model.repository.UserRepository;
+import com.example.model.dto.*;
 import com.example.security.MyUserDetails;
+import com.example.service.ActivityService;
+import com.example.service.AllowedActivityService;
+import com.example.service.UserActivityService;
+import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,33 +23,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
 public class UserController {
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
+    private UserService userService;
     @Autowired
-    private UserRepository userRepository;
-
+    private ActivityService activityService;
     @Autowired
-    private AllowedActivityRepository allowedActivityRepository;
-
+    private AllowedActivityService allowedActivityService;
     @Autowired
-    private ActivityRepository activityRepository;
+    private UserActivityService userActivityService;
 
-    @Autowired
-    private UserActivityRepository userActivityRepository;
 
     @GetMapping("/tracker/userProfile")
     public String userProfile(Model model) {
         Long id = getUserSessionId();
-        Optional<User> user = userRepository.findById(id);
+        Optional<User> user = userService.userByIdSearch(id);
         user.ifPresent(value -> model.addAttribute("user", value));
         return "userProfile";
     }
@@ -58,82 +50,81 @@ public class UserController {
     @GetMapping("/tracker/updateProfile")
     public String updateProfile(Model model) {
         Long id = getUserSessionId();
-        Optional<User> user = userRepository.findById(id);
+        Optional<User> user = userService.userByIdSearch(id);
         user.ifPresent(value -> model.addAttribute("user", value));
         return "updateProfile";
     }
 
     @PostMapping("/tracker/updateProfile")
     public String updateProfilePost(@ModelAttribute("user") @Valid UserUpdateDto userUpdateDto,
-                                    BindingResult result, RedirectAttributes redirect,
-                                    Model model
-    ) {
-        Long id = getUserSessionId();
-        User user = userRepository.findById(id).orElseThrow();
-        model.addAttribute("user", user);
-        if (!passwordEncoder.matches(userUpdateDto.getUserPasswordConfirm(), user.getUserPassword())) {
-            redirect.addFlashAttribute("errors", "Password confirm does not match original user password");
-            return "redirect:updateProfile";
-        }
+                                    BindingResult result, RedirectAttributes redirect) {
         if (result.hasErrors()) {
             List<FieldError> fieldErrors = result.getFieldErrors();
-
             String collect = fieldErrors.stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
                     .collect(Collectors.joining("; "));
             redirect.addFlashAttribute("errors", collect);
             return "redirect:updateProfile";
         }
-        user.setUserEmail(userUpdateDto.getUserEmail());
-        user.setUserFirstName(userUpdateDto.getUserFirstName());
-        user.setUserLastName(userUpdateDto.getUserLastName());
-        user.setUserPassword(passwordEncoder.encode(userUpdateDto.getUserPassword()));
-        userRepository.save(user);
-        redirect.addFlashAttribute("messages", "Profile successfully updated");
-        return "redirect:userProfile";
+        Long id = getUserSessionId();
+        try {
+            userService.updateUser(userUpdateDto, id);
+            redirect.addFlashAttribute("messages", "Profile successfully updated");
+            return "redirect:userProfile";
+        } catch (TimeTrackerException e) {
+            redirect.addFlashAttribute("errors", e.getMessage());
+            return "redirect:updateProfile";
+        }
     }
 
     @GetMapping("/tracker/userRequests")
     public String userRequests(Model model) {
         Long id = getUserSessionId();
-        List<AllowedActivity> activity = allowedActivityRepository.activitiesByUser(id);
-        List<String> allActivities = activityRepository.absentActivities(id);
-        List<String> allActivitiesUa = activityRepository.absentActivitiesUa(id);
-        model.addAttribute("activity", activity);
-        model.addAttribute("allActivities", allActivities);
-        model.addAttribute("allActivitiesUa", allActivitiesUa);
+        UserRequestsDTO userRequestsDTO = new UserRequestsDTO(allowedActivityService.getAllowedActivities(id), activityService.getActivityList(id));
+        model.addAttribute("activityList", userRequestsDTO);
         return "userRequests";
     }
 
     @PostMapping("/tracker/request")
-    public String request(@RequestParam String requestActivity) {
-        allowedActivityRepository.request(getUserSessionId(), requestActivity);
+    public String request(@RequestParam String requestActivity, RedirectAttributes redirect) {
+        allowedActivityService.requestActivity(getUserSessionId(), requestActivity);
+        redirect.addFlashAttribute("messages", "Activity successfully requested");
         return "redirect:userRequests";
     }
 
     @GetMapping("/tracker/schedule")
     public String schedule(Model model) {
         Long id = getUserSessionId();
-        List<UserActivity> userActivity = userActivityRepository.activitiesByUser(id);
-        model.addAttribute("userActivity", userActivity);
-        List<AllowedActivity> activityApproved = allowedActivityRepository.activitiesByUserApproved(id);
-        model.addAttribute("activityApproved", activityApproved);
+        ActivityListScheduleDTO activityListScheduleDTO = new ActivityListScheduleDTO(userActivityService.userActivity(id), allowedActivityService.activityApproved(id));
+        model.addAttribute("activityList", activityListScheduleDTO);
         return "schedule";
     }
 
     @PostMapping("/tracker/addSchedule")
-    public String addSchedule(@RequestParam String activityDateAdd,
-                              @RequestParam String activityNameAdd,
-                              @RequestParam Integer activityDurationAdd,
-                              Map<String, Object> model) {
-
-        userActivityRepository.saveActivityForUser(getUserSessionId(), activityNameAdd, LocalDate.parse(activityDateAdd), activityDurationAdd);
-        return "redirect:schedule";
+    public String addSchedule(@ModelAttribute("activityAdd") @Valid ActivityScheduleDTO activityScheduleDTO,
+                              BindingResult result, RedirectAttributes redirect) {
+        Long id = getUserSessionId();
+        if (result.hasErrors()) {
+            List<FieldError> fieldErrors = result.getFieldErrors();
+            String collect = fieldErrors.stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.joining("; "));
+            redirect.addFlashAttribute("errors", collect);
+            return "redirect:schedule";
+        }
+        try {
+            userActivityService.addActivityToSchedule(id, activityScheduleDTO);
+            redirect.addFlashAttribute("messages", "Activity successfully stored to schedule");
+            return "redirect:schedule";
+        } catch (RecordExistException e) {
+            redirect.addFlashAttribute("errors", e.getMessage());
+            return "redirect:schedule";
+        }
     }
 
     @PostMapping("/tracker/deleteSchedule")
-    public String deleteSchedule(@RequestParam String activityDate,
-                                 @RequestParam String activityList) {
-        userActivityRepository.deleteActivityForUser(getUserSessionId(), activityList, LocalDate.parse(activityDate));
+    public String deleteSchedule(@ModelAttribute("activityDelete") @Valid ActivityScheduleDeleteDTO activityScheduleDeleteDTO,
+                                 RedirectAttributes redirect) {
+        userActivityService.deleteActivityForUser(getUserSessionId(), activityScheduleDeleteDTO);
+        redirect.addFlashAttribute("messages", "Activity successfully deleted from schedule");
         return "redirect:schedule";
     }
 

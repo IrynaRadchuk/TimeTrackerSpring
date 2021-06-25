@@ -1,22 +1,29 @@
 package com.example.controller;
 
 import com.example.model.*;
+import com.example.model.dto.*;
 import com.example.model.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class AdminController {
@@ -45,10 +52,8 @@ public class AdminController {
 
     @GetMapping("/tracker/adminActivities")
     public String adminActivities(Model model) {
-        Iterable<Activity> activities = activityRepository.findAll();
-        model.addAttribute("activities", activities);
-        Iterable<Category> categories = categoryRepository.findAll();
-        model.addAttribute("categories", categories);
+        ActivityCategoryDTO activityCategoryDTO = new ActivityCategoryDTO(activityRepository.findAll(), categoryRepository.findAll());
+        model.addAttribute("activityCategory", activityCategoryDTO);
         return "adminActivities";
     }
 
@@ -56,14 +61,13 @@ public class AdminController {
     public String statActivities(Model model) {
         List<Activity> activityStat = activityRepository.activityWithUsersCount();
         model.addAttribute("activityStat", activityStat);
-        //List<Integer> users = allowedActivityRepository.countUsers();
         return "statActivities";
     }
 
     @GetMapping("/tracker/statUsers")
     public String statUsers(@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size, Model model) {
-        page = Objects.isNull(page)? 0 : page;
-        size = Objects.isNull(size)||size==0? 10 : size;
+        page = Objects.isNull(page) ? 0 : page;
+        size = Objects.isNull(size) || size == 0 ? 10 : size;
         Pageable sortedByDateDesc =
                 PageRequest.of(page, size, Sort.by("activityDate").descending());
         Page<UserActivity> onePageActivities = userActivityRepository.findAll(sortedByDateDesc);
@@ -84,30 +88,40 @@ public class AdminController {
     }
 
     @PostMapping("/tracker/approveRequest")
-    public String approveRequest(@RequestParam Long userId,
-                                 @RequestParam String activityName,
-                                 Map<String, Object> model) {
-        allowedActivityRepository.approveActivity(userId, activityName);
+    public String approveRequest(@ModelAttribute("request") @Valid AdminRequestDTO adminRequestDTO,
+                                 RedirectAttributes redirect) {
+        allowedActivityRepository.approveActivity(adminRequestDTO.getUserId(), adminRequestDTO.getActivityName());
+        redirect.addFlashAttribute("messages", "Request successfully approved");
         return "redirect:adminRequests";
     }
 
     @PostMapping("/tracker/denyRequest")
-    public String denyRequest(@RequestParam Long userId,
-                              @RequestParam String activityName,
-                              Map<String, Object> model) {
-        allowedActivityRepository.denyActivity(userId, activityName);
+    public String denyRequest(@ModelAttribute("request") @Valid AdminRequestDTO adminRequestDTO,
+                              RedirectAttributes redirect) {
+        allowedActivityRepository.denyActivity(adminRequestDTO.getUserId(), adminRequestDTO.getActivityName());
+        redirect.addFlashAttribute("messages", "Request successfully denied");
         return "redirect:adminRequests";
     }
 
     @PostMapping("/tracker/addUser")
-    public String addUser(@RequestParam String userAddEmail,
-                          @RequestParam String userAddFirstName,
-                          @RequestParam String userAddLastName,
-                          @RequestParam String roleAdd,
-                          Map<String, Object> model) {
-        Role role = new Role(RoleName.valueOf(roleAdd));
-        User user = new User(userAddEmail, userAddFirstName, userAddLastName, role);
+    public String addUser(@ModelAttribute("addUsers") @Valid AdminUserAddDTO adminUserAddDTO,
+                          BindingResult result, RedirectAttributes redirect) {
+        if (result.hasErrors()) {
+            List<FieldError> fieldErrors = result.getFieldErrors();
+            String collect = fieldErrors.stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.joining("; "));
+            redirect.addFlashAttribute("errors", collect);
+            return "redirect:adminUsers";
+        }
+        Optional<User> userFromDB = userRepository.findByUserEmail(adminUserAddDTO.getUserAddEmail());
+        if (userFromDB.isPresent()){
+            redirect.addFlashAttribute("errors", "This email is already in use");
+            return "redirect:adminUsers";
+        }
+        Role role = new Role(RoleName.valueOf(adminUserAddDTO.getRoleAdd()));
+        User user = new User(adminUserAddDTO.getUserAddEmail(), adminUserAddDTO.getUserAddFirstName(), adminUserAddDTO.getUserAddLastName(), role);
         userRepository.save(user);
+        redirect.addFlashAttribute("messages", "User successfully added");
         return "redirect:adminUsers";
     }
 
@@ -118,51 +132,82 @@ public class AdminController {
     }
 
     @PostMapping("/tracker/changeUser")
-    public String changeUser(@RequestParam Long id,
-                             @RequestParam String userEmail,
-                             @RequestParam String userFirstName,
-                             @RequestParam String userLastName,
-                             @RequestParam String roleList,
-                             Map<String, Object> model) {
-        User user = userRepository.findById(id).orElseThrow();
-        user.setUserEmail(userEmail);
-        user.setUserFirstName(userFirstName);
-        user.setUserLastName(userLastName);
-        user.setRole(new Role(RoleName.valueOf(roleList)));
+    public String changeUser(@ModelAttribute("adminUsers") @Valid AdminUserDTO adminUserDTO,
+                             BindingResult result, RedirectAttributes redirect) {
+        if (result.hasErrors()) {
+            List<FieldError> fieldErrors = result.getFieldErrors();
+            String collect = fieldErrors.stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.joining("; "));
+            redirect.addFlashAttribute("errors", collect);
+            return "redirect:adminUsers";
+        }
+        Optional<User> userFromDB = userRepository.findByUserEmail(adminUserDTO.getUserEmail());
+        if (userFromDB.isPresent()){
+            redirect.addFlashAttribute("errors", "This email is already in use");
+            return "redirect:adminUsers";
+        }
+        User user = userRepository.findById(adminUserDTO.getId()).orElseThrow();
+        user.setUserEmail(adminUserDTO.getUserEmail());
+        user.setUserFirstName(adminUserDTO.getUserFirstName());
+        user.setUserLastName(adminUserDTO.getUserLastName());
+        user.setRole(new Role(RoleName.valueOf(adminUserDTO.getRoleList())));
         userRepository.save(user);
+        redirect.addFlashAttribute("messages", "User successfully updated");
         return "redirect:adminUsers";
     }
 
 
     @PostMapping("/tracker/addActivity")
-    public String addActivity(@RequestParam String activityAddName,
-                              @RequestParam String activityAddUa,
-                              @RequestParam String categoryAdd,
-                              Map<String, Object> model) {
-        Category category = categoryRepository.categoryIdByName(categoryAdd);
-        Activity activity = new Activity(activityAddName, activityAddUa, category);
+    public String addActivity(@ModelAttribute("adminActivities") @Valid ActivityAddDTO activityAddDTO,
+                              BindingResult result, RedirectAttributes redirect) {
+        if (result.hasErrors()) {
+            List<FieldError> fieldErrors = result.getFieldErrors();
+            String collect = fieldErrors.stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.joining("; "));
+            redirect.addFlashAttribute("errors", collect);
+            return "redirect:adminActivities";
+        }
+        Optional<Activity> activityFromDB = activityRepository.findByActivityName(activityAddDTO.getActivityAddName());
+        if (activityFromDB.isPresent()){
+            redirect.addFlashAttribute("errors", "This activity already exists");
+            return "redirect:adminActivities";
+        }
+        Category category = categoryRepository.categoryIdByName(activityAddDTO.getCategoryAdd());
+        Activity activity = new Activity(activityAddDTO.getActivityAddName(), activityAddDTO.getActivityAddUa(), category);
         activityRepository.save(activity);
+        redirect.addFlashAttribute("messages", "Activity successfully added");
         return "redirect:adminActivities";
     }
 
     @PostMapping("/tracker/deleteActivity")
-    public String deleteActivity(@RequestParam Long id) {
+    public String deleteActivity(@RequestParam Long id, RedirectAttributes redirect) {
         activityRepository.deleteById(id);
+        redirect.addFlashAttribute("messages", "Activity successfully deleted");
         return "redirect:adminActivities";
     }
 
     @PostMapping("/tracker/changeActivity")
-    public String changeActivity(@RequestParam Long id,
-                                 @RequestParam String activityName,
-                                 @RequestParam String activityUa,
-                                 @RequestParam String categoryList,
-                                 Map<String, Object> model) {
-        Activity activity = activityRepository.findById(id).orElseThrow();
-        Category category = categoryRepository.categoryIdByName(categoryList);
-        activity.setActivityName(activityName);
-        activity.setActivityUa(activityUa);
+    public String changeActivity(@ModelAttribute("changeActivities") @Valid ActivityChangeDTO activityChangeDTO,
+                                 BindingResult result, RedirectAttributes redirect) {
+        if (result.hasErrors()) {
+            List<FieldError> fieldErrors = result.getFieldErrors();
+            String collect = fieldErrors.stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.joining("; "));
+            redirect.addFlashAttribute("errors", collect);
+            return "redirect:adminActivities";
+        }
+        Optional<Activity> activityFromDB = activityRepository.findByActivityName(activityChangeDTO.getActivityName());
+        if (activityFromDB.isPresent()){
+            redirect.addFlashAttribute("errors", "This activity already exists");
+            return "redirect:adminActivities";
+        }
+        Category category = categoryRepository.categoryIdByName(activityChangeDTO.getCategoryList());
+        Activity activity = activityRepository.findById(activityChangeDTO.getId()).orElseThrow();
+        activity.setActivityName(activityChangeDTO.getActivityName());
+        activity.setActivityUa(activityChangeDTO.getActivityUa());
         activity.setCategory(category);
         activityRepository.save(activity);
+        redirect.addFlashAttribute("messages", "Activity successfully changed");
         return "redirect:adminActivities";
     }
 }

@@ -20,11 +20,11 @@
         </th>
         <th></th>
     </tr>
-        <tr th:each ="el:${userActivity}">
-            <form method="post">
+        <tr th:each ="el:${activityList.userActivity}">
+            <form method="post" th:object="${activityDelete}">
             <td> <input type="date" name="activityDate" th:value = "${el?.activityDate}"></td>
             <td>
-                <select name="activityList" id="activityList">
+                <select name="activityName" id="activityName">
                     <option th:selected = "${el?.activity.activityName}">
                     <span th:if="${#locale.toString()}=='uk'"
                     th:value="${el?.activity.activityUa}"
@@ -43,20 +43,20 @@
                     </option>
                 </select>
                 </td>
-            <td> <input type="text" name="activityDuration" th:value = "${el?.activityDuration}"></td>
+            <td> <input type="text" name="activityDuration" th:value = "${el?.activityDuration}" readonly></td>
             <td>
                 <button type="submit" class="btn btn-danger" formaction="deleteSchedule" th:text="#{button.delete}"></button>
             </td>
     </form>
     </tr>
         <tr>
-            <form method="post">
+            <form method="post" th:object="${activityAdd}">
             <td>
                 <input type="date" name="activityDateAdd">
             </td>
             <td>
                 <select name="activityNameAdd">
-                    <option th:each ="c:${activityApproved}">
+                    <option th:each ="c:${activityList.activityApproved}">
                     <span th:if="${#locale.toString()}=='uk'"
                           th:value="${c?.activity.activityUa}"
                           th:text="${c?.activity.activityUa}"></span>
@@ -67,7 +67,7 @@
                 </select>
             </td>
             <td>
-                <input type="text" name="activityDurationAdd">
+                <input type="number" min="1" max="8" name="activityDurationAdd">
             </td>
             <td>
                 <button type="submit" class="btn btn-success" formaction="addSchedule" th:text="#{button.addition}"></button>
