@@ -22,26 +22,14 @@
     </tr>
         <tr th:each ="el:${activityList.userActivity}">
             <form method="post" th:object="${activityDelete}">
-            <td> <input type="date" name="activityDate" th:value = "${el?.activityDate}"></td>
+            <td> <input type="date" name="activityDate" th:value = "${el?.activityDate}" readonly></td>
             <td>
-                <select name="activityName" id="activityName">
-                    <option th:selected = "${el?.activity.activityName}">
-                    <span th:if="${#locale.toString()}=='uk'"
+                    <span input type="text" name="activityName" th:if="${#locale.toString()}=='uk'"
                     th:value="${el?.activity.activityUa}"
-                    th:text="${el?.activity.activityUa}"></span>
-                    <span th:if="${#locale.toString()}!='uk'"
+                    th:text="${el?.activity.activityUa}" readonly></span>
+                    <span input type="text" name="activityName" th:if="${#locale.toString()}!='uk'"
                           th:value="${el?.activity.activityName}"
-                          th:text="${el?.activity.activityName}" ></span>
-                    </option>
-                    <option th:each ="c:${activityApproved}">
-                            <span th:if="${#locale.toString()}=='uk'"
-                            th:value="${c?.activity.activityUa}"
-                            th:text="${c?.activity.activityUa}"></span>
-                        <span th:if="${#locale.toString()}!='uk'"
-                            th:value="${c?.activity.activityName}"
-                            th:text="${c?.activity.activityName}" ></span>
-                    </option>
-                </select>
+                          th:text="${el?.activity.activityName}" readonly></span>
                 </td>
             <td> <input type="text" name="activityDuration" th:value = "${el?.activityDuration}" readonly></td>
             <td>
