@@ -12,6 +12,7 @@ import com.example.model.dto.UserRegisterDTO;
 import com.example.model.dto.UserUpdateDto;
 import com.example.model.repository.UserRepository;
 import com.example.service.UserService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ import java.util.Optional;
  * @author Iryna Radchuk
  */
 @Service
+@Log4j2
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
@@ -35,6 +37,7 @@ public class UserServiceImpl implements UserService {
     public boolean registerUser(UserRegisterDTO userRegisterDTO) {
         Optional<User> userFromDB = userRepository.findByUserEmail(userRegisterDTO.getUserEmail());
         if (userFromDB.isPresent()) {
+            log.error("User with email already exists");
             return false;
         }
         User user = new User(userRegisterDTO.getUserEmail(),
@@ -51,10 +54,11 @@ public class UserServiceImpl implements UserService {
 
         User userFromDB = userRepository.findByUserEmail(userUpdateDto.getUserEmail()).orElseThrow();
         if (Objects.nonNull(userFromDB) && !userFromDB.equals(user)) {
-
+            log.error("User with email already exists");
             throw new RecordExistException("This email is already in use");
         }
         if (!passwordEncoder.matches(userUpdateDto.getUserPasswordConfirm(), user.getUserPassword())) {
+            log.error("Password confirm does not match original user password");
             throw new PasswordMismatchException("Password confirm does not match original user password");
         }
 
@@ -80,6 +84,7 @@ public class UserServiceImpl implements UserService {
     public void userAddByAdmin(AdminUserAddDTO adminUserAddDTO) throws RecordExistException {
         Optional<User> userFromDB = userRepository.findByUserEmail(adminUserAddDTO.getUserAddEmail());
         if (userFromDB.isPresent()) {
+            log.error("User with email already exists");
             throw new RecordExistException("This email is already in use");
         }
         Role role = new Role(RoleName.valueOf(adminUserAddDTO.getRoleAdd()));
@@ -96,6 +101,7 @@ public class UserServiceImpl implements UserService {
     public void userChangeByAdmin(AdminUserDTO adminUserDTO) throws RecordExistException {
         Optional<User> userFromDB = userRepository.findByUserEmail(adminUserDTO.getUserEmail());
         if (userFromDB.isPresent()) {
+            log.error("User with email already exists");
             throw new RecordExistException("This email is already in use");
         }
         User user = userRepository.findById(adminUserDTO.getId()).orElseThrow();

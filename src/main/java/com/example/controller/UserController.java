@@ -9,6 +9,7 @@ import com.example.service.ActivityService;
 import com.example.service.AllowedActivityService;
 import com.example.service.UserActivityService;
 import com.example.service.UserService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
  * @author Iryna Radchuk
  */
 @Controller
+@Log4j2
 public class UserController {
 
     @Autowired
@@ -77,6 +79,7 @@ public class UserController {
         Long id = getUserSessionId();
         try {
             userService.updateUser(userUpdateDto, id);
+            log.info("Profile successfully updated");
             redirect.addFlashAttribute("messages", "Profile successfully updated");
             return "redirect:userProfile";
         } catch (TimeTrackerException e) {
@@ -96,6 +99,7 @@ public class UserController {
     @PostMapping("/tracker/request")
     public String request(@RequestParam String requestActivity, RedirectAttributes redirect) {
         allowedActivityService.requestActivity(getUserSessionId(), requestActivity);
+        log.info("Activity successfully requested");
         redirect.addFlashAttribute("messages", "Activity successfully requested");
         return "redirect:userRequests";
     }
@@ -121,6 +125,7 @@ public class UserController {
         }
         try {
             userActivityService.addActivityToSchedule(id, activityScheduleDTO);
+            log.info("Activity successfully stored to schedule");
             redirect.addFlashAttribute("messages", "Activity successfully stored to schedule");
             return "redirect:schedule";
         } catch (RecordExistException e) {
@@ -133,6 +138,7 @@ public class UserController {
     public String deleteSchedule(@ModelAttribute("activityDelete") @Valid ActivityScheduleDeleteDTO activityScheduleDeleteDTO,
                                  RedirectAttributes redirect) {
         userActivityService.deleteActivityForUser(getUserSessionId(), activityScheduleDeleteDTO);
+        log.info("Activity successfully deleted from schedule");
         redirect.addFlashAttribute("messages", "Activity successfully deleted from schedule");
         return "redirect:schedule";
     }

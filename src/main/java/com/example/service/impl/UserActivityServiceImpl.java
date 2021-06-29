@@ -6,6 +6,7 @@ import com.example.model.dto.ActivityScheduleDTO;
 import com.example.model.dto.ActivityScheduleDeleteDTO;
 import com.example.model.repository.UserActivityRepository;
 import com.example.service.UserActivityService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ import java.util.Objects;
  * @author Iryna Radchuk
  */
 @Service
+@Log4j2
 public class UserActivityServiceImpl implements UserActivityService {
 
     @Autowired
@@ -39,6 +41,7 @@ public class UserActivityServiceImpl implements UserActivityService {
     @Override
     public void addActivityToSchedule(Long id, ActivityScheduleDTO activityScheduleDTO) throws RecordExistException {
         if (Objects.nonNull(userActivityRepository.activityByUserDate(id, activityScheduleDTO.getActivityNameAdd(), LocalDate.parse(activityScheduleDTO.getActivityDateAdd())))) {
+            log.error("This activity is already stored for this date");
             throw new RecordExistException("This activity is already stored for this date");
         }
         userActivityRepository.saveActivityForUser(id,

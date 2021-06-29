@@ -7,6 +7,7 @@ import com.example.model.User;
 import com.example.model.UserActivity;
 import com.example.model.dto.*;
 import com.example.service.*;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
  * @author Iryna Radchuk
  */
 @Controller
+@Log4j2
 public class AdminController {
 
     @Autowired
@@ -100,6 +102,7 @@ public class AdminController {
     public String approveRequest(@ModelAttribute("request") @Valid AdminRequestDTO adminRequestDTO,
                                  RedirectAttributes redirect) {
         allowedActivityService.approveActivity(adminRequestDTO);
+        log.info("Request successfully approved");
         redirect.addFlashAttribute("messages", "Request successfully approved");
         return "redirect:adminRequests";
     }
@@ -108,6 +111,7 @@ public class AdminController {
     public String denyRequest(@ModelAttribute("request") @Valid AdminRequestDTO adminRequestDTO,
                               RedirectAttributes redirect) {
         allowedActivityService.denyActivity(adminRequestDTO);
+        log.info("Request successfully denied");
         redirect.addFlashAttribute("messages", "Request successfully denied");
         return "redirect:adminRequests";
     }
@@ -124,6 +128,7 @@ public class AdminController {
         }
         try {
             userService.userAddByAdmin(adminUserAddDTO);
+            log.info("User successfully added");
             redirect.addFlashAttribute("messages", "User successfully added");
             return "redirect:adminUsers";
         } catch (RecordExistException e) {
@@ -151,6 +156,7 @@ public class AdminController {
         }
         try {
             userService.userChangeByAdmin(adminUserDTO);
+            log.info("User successfully updated");
             redirect.addFlashAttribute("messages", "User successfully updated");
             return "redirect:adminUsers";
         } catch (RecordExistException e) {
@@ -172,6 +178,7 @@ public class AdminController {
         }
         try {
             activityService.addActivityByAdmin(activityAddDTO);
+            log.info("Activity successfully added");
             redirect.addFlashAttribute("messages", "Activity successfully added");
             return "redirect:adminActivities";
         } catch (RecordExistException e) {
@@ -183,6 +190,7 @@ public class AdminController {
     @PostMapping("/tracker/deleteActivity")
     public String deleteActivity(@RequestParam Long id, RedirectAttributes redirect) {
         activityService.deleteActivityByAdmin(id);
+        log.info("Activity successfully deleted");
         redirect.addFlashAttribute("messages", "Activity successfully deleted");
         return "redirect:adminActivities";
     }
@@ -199,6 +207,7 @@ public class AdminController {
         }
         try {
             activityService.changeActivityByAdmin(activityChangeDTO);
+            log.info("Activity successfully changed");
             redirect.addFlashAttribute("messages", "Activity successfully changed");
             return "redirect:adminActivities";
         } catch (RecordExistException e) {

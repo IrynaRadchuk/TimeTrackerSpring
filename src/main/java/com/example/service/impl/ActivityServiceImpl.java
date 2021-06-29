@@ -8,6 +8,7 @@ import com.example.model.dto.ActivityChangeDTO;
 import com.example.model.repository.ActivityRepository;
 import com.example.service.ActivityService;
 import com.example.service.CategoryService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,9 @@ import java.util.Optional;
  *
  * @author Iryna Radchuk
  */
+
 @Service
+@Log4j2
 public class ActivityServiceImpl implements ActivityService {
     @Autowired
     private ActivityRepository activityRepository;
@@ -35,6 +38,7 @@ public class ActivityServiceImpl implements ActivityService {
     public void addActivityByAdmin(ActivityAddDTO activityAddDTO) throws RecordExistException {
         Optional<Activity> activityFromDB = activityRepository.findByActivityName(activityAddDTO.getActivityAddName());
         if (activityFromDB.isPresent()) {
+            log.error("This activity already exists");
             throw new RecordExistException("This activity already exists");
         }
         Category category = categoryService.categoryByName(activityAddDTO.getCategoryAdd());
@@ -51,6 +55,7 @@ public class ActivityServiceImpl implements ActivityService {
     public void changeActivityByAdmin(ActivityChangeDTO activityChangeDTO) throws RecordExistException {
         Optional<Activity> activityFromDB = activityRepository.findByActivityName(activityChangeDTO.getActivityName());
         if (activityFromDB.isPresent()) {
+            log.error("This activity already exists");
             throw new RecordExistException("This activity already exists");
         }
         Category category = categoryService.categoryByName(activityChangeDTO.getCategoryList());

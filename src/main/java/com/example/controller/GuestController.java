@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.model.dto.UserRegisterDTO;
 import com.example.model.repository.UserRepository;
 import com.example.service.UserService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
  * @author Iryna Radchuk
  */
 @Controller
+@Log4j2
 @RequestMapping("/tracker")
 public class GuestController {
 
@@ -61,9 +63,11 @@ public class GuestController {
             return "redirect:registration";
         }
         if (!service.registerUser(userRegisterDTO)) {
+            log.info("User with email already exists");
             redirect.addFlashAttribute("errors", "This email is already in use");
             return "redirect:registration";
         } else {
+            log.info("User successfully registered");
             redirect.addFlashAttribute("messages", "User successfully registered");
             return "redirect:/tracker/login";
         }
