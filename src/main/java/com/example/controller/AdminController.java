@@ -28,6 +28,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Controller that reacts to requests on admin pages
+ *
+ * @author Iryna Radchuk
+ */
 @Controller
 public class AdminController {
 

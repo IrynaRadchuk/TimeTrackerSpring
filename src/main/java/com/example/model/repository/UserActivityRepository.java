@@ -12,6 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Interface to handle statements to user activity table in database
+ *
+ * @author Iryna Radchuk
+ */
 public interface UserActivityRepository extends JpaRepository<UserActivity, Long> {
     Page<UserActivity> findAll(Pageable pageable);
 

@@ -14,6 +14,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service to manage activities
+ *
+ * @author Iryna Radchuk
+ */
 @Service
 public class ActivityServiceImpl implements ActivityService {
     @Autowired

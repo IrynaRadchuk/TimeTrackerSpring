@@ -19,6 +19,11 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Service to manage users information
+ *
+ * @author Iryna Radchuk
+ */
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired

@@ -8,6 +8,11 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Interface to handle statements to activity table in database
+ *
+ * @author Iryna Radchuk
+ */
 public interface ActivityRepository extends CrudRepository<Activity, Long> {
     @Query(value = "SELECT activity.activity_id, activity.activity_ua, activity.activity_name, activity.category_id, activity_category.category_name, count(user_allowed_activity.user_id) as \"user_quantity\" from activity left join activity_category on activity_category.category_id = activity.category_id left join user_allowed_activity on activity.activity_id = user_allowed_activity.activity_id group by user_allowed_activity.activity_id", nativeQuery = true)
     List<Activity> activityWithUsersCount();

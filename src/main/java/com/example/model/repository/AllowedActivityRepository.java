@@ -9,6 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Interface to handle statements to allowed activity table in database
+ *
+ * @author Iryna Radchuk
+ */
 public interface AllowedActivityRepository extends CrudRepository<AllowedActivity, Long> {
 
     @Query(value = "SELECT * FROM user_allowed_activity where user_id = :userId", nativeQuery = true)

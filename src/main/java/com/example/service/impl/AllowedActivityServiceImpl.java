@@ -9,6 +9,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Service to manage allowed activities
+ *
+ * @author Iryna Radchuk
+ */
 @Service
 public class AllowedActivityServiceImpl implements AllowedActivityService {
 

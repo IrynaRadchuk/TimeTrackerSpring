@@ -9,12 +9,30 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
+/**
+ * Service to manage activities schedule for users
+ *
+ * @author Iryna Radchuk
+ */
 public interface UserActivityService {
+
+    /**
+     * Get all activities for a user
+     */
     List<UserActivity> userActivity(Long id);
 
+    /**
+     * Delete activity from schedule by user
+     */
     void deleteActivityForUser(Long id, ActivityScheduleDeleteDTO activityScheduleDeleteDTO);
 
+    /**
+     * Add activity to schedule by user
+     */
     void addActivityToSchedule(Long id, ActivityScheduleDTO activityScheduleDTO) throws RecordExistException;
 
+    /**
+     * Get page of user activities
+     */
     Page<UserActivity> onePageActivities(Pageable pageable);
 }

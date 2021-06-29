@@ -6,6 +6,11 @@ import com.example.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service to manage categories of activities
+ *
+ * @author Iryna Radchuk
+ */
 @Service
 public class CategoryServiceImpl implements CategoryService {
     @Autowired

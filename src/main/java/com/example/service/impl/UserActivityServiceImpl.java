@@ -15,6 +15,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Service to manage activities schedule for users
+ *
+ * @author Iryna Radchuk
+ */
 @Service
 public class UserActivityServiceImpl implements UserActivityService {
 

@@ -27,6 +27,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Controller that reacts to requests on user pages
+ *
+ * @author Iryna Radchuk
+ */
 @Controller
 public class UserController {
 
