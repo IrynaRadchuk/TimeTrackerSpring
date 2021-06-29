@@ -16,6 +16,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -34,6 +35,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Override
+    @Transactional
     public boolean registerUser(UserRegisterDTO userRegisterDTO) {
         Optional<User> userFromDB = userRepository.findByUserEmail(userRegisterDTO.getUserEmail());
         if (userFromDB.isPresent()) {
@@ -48,10 +51,10 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
+    @Override
+    @Transactional
     public void updateUser(UserUpdateDto userUpdateDto, Long id) throws TimeTrackerException {
-
         User user = userRepository.findById(id).orElseThrow();
-
         User userFromDB = userRepository.findByUserEmail(userUpdateDto.getUserEmail()).orElseThrow();
         if (Objects.nonNull(userFromDB) && !userFromDB.equals(user)) {
             log.error("User with email already exists");
@@ -61,8 +64,6 @@ public class UserServiceImpl implements UserService {
             log.error("Password confirm does not match original user password");
             throw new PasswordMismatchException("Password confirm does not match original user password");
         }
-
-
         user.setUserEmail(userUpdateDto.getUserEmail());
         user.setUserFirstName(userUpdateDto.getUserFirstName());
         user.setUserLastName(userUpdateDto.getUserLastName());
@@ -81,6 +82,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void userAddByAdmin(AdminUserAddDTO adminUserAddDTO) throws RecordExistException {
         Optional<User> userFromDB = userRepository.findByUserEmail(adminUserAddDTO.getUserAddEmail());
         if (userFromDB.isPresent()) {
@@ -98,6 +100,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void userChangeByAdmin(AdminUserDTO adminUserDTO) throws RecordExistException {
         Optional<User> userFromDB = userRepository.findByUserEmail(adminUserDTO.getUserEmail());
         if (userFromDB.isPresent()) {

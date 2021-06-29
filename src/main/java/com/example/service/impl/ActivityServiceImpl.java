@@ -11,9 +11,10 @@ import com.example.service.CategoryService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 /**
  * Service to manage activities
@@ -35,9 +36,10 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
+    @Transactional
     public void addActivityByAdmin(ActivityAddDTO activityAddDTO) throws RecordExistException {
-        Optional<Activity> activityFromDB = activityRepository.findByActivityName(activityAddDTO.getActivityAddName());
-        if (activityFromDB.isPresent()) {
+        Activity activityFromDB = activityRepository.findByActivityName(activityAddDTO.getActivityAddName());
+        if (Objects.nonNull(activityFromDB)) {
             log.error("This activity already exists");
             throw new RecordExistException("This activity already exists");
         }
@@ -52,14 +54,15 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
+    @Transactional
     public void changeActivityByAdmin(ActivityChangeDTO activityChangeDTO) throws RecordExistException {
-        Optional<Activity> activityFromDB = activityRepository.findByActivityName(activityChangeDTO.getActivityName());
-        if (activityFromDB.isPresent()) {
+        Category category = categoryService.categoryByName(activityChangeDTO.getCategoryList());
+        Activity activity = activityRepository.findById(activityChangeDTO.getId()).orElseThrow();
+        Activity activityFromDB = activityRepository.findByActivityName(activityChangeDTO.getActivityName());
+        if (Objects.nonNull(activityFromDB) && !activityFromDB.equals(activity)) {
             log.error("This activity already exists");
             throw new RecordExistException("This activity already exists");
         }
-        Category category = categoryService.categoryByName(activityChangeDTO.getCategoryList());
-        Activity activity = activityRepository.findById(activityChangeDTO.getId()).orElseThrow();
         activity.setActivityName(activityChangeDTO.getActivityName());
         activity.setActivityUa(activityChangeDTO.getActivityUa());
         activity.setCategory(category);

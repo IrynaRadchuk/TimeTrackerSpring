@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -39,6 +40,7 @@ public class UserActivityServiceImpl implements UserActivityService {
     }
 
     @Override
+    @Transactional
     public void addActivityToSchedule(Long id, ActivityScheduleDTO activityScheduleDTO) throws RecordExistException {
         if (Objects.nonNull(userActivityRepository.activityByUserDate(id, activityScheduleDTO.getActivityNameAdd(), LocalDate.parse(activityScheduleDTO.getActivityDateAdd())))) {
             log.error("This activity is already stored for this date");
