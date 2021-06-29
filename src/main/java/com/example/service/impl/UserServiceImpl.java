@@ -38,8 +38,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public boolean registerUser(UserRegisterDTO userRegisterDTO) {
-        Optional<User> userFromDB = userRepository.findByUserEmail(userRegisterDTO.getUserEmail());
-        if (userFromDB.isPresent()) {
+        User userFromDB = userRepository.findByUserEmail(userRegisterDTO.getUserEmail());
+        if (Objects.nonNull(userFromDB)) {
             log.error("User with email already exists");
             return false;
         }
@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void updateUser(UserUpdateDto userUpdateDto, Long id) throws TimeTrackerException {
         User user = userRepository.findById(id).orElseThrow();
-        User userFromDB = userRepository.findByUserEmail(userUpdateDto.getUserEmail()).orElseThrow();
+        User userFromDB = userRepository.findByUserEmail(userUpdateDto.getUserEmail());
         if (Objects.nonNull(userFromDB) && !userFromDB.equals(user)) {
             log.error("User with email already exists");
             throw new RecordExistException("This email is already in use");
@@ -84,8 +84,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void userAddByAdmin(AdminUserAddDTO adminUserAddDTO) throws RecordExistException {
-        Optional<User> userFromDB = userRepository.findByUserEmail(adminUserAddDTO.getUserAddEmail());
-        if (userFromDB.isPresent()) {
+        User userFromDB = userRepository.findByUserEmail(adminUserAddDTO.getUserAddEmail());
+        if (Objects.nonNull(userFromDB)) {
             log.error("User with email already exists");
             throw new RecordExistException("This email is already in use");
         }
@@ -102,17 +102,16 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void userChangeByAdmin(AdminUserDTO adminUserDTO) throws RecordExistException {
-        Optional<User> userFromDB = userRepository.findByUserEmail(adminUserDTO.getUserEmail());
-        if (userFromDB.isPresent()) {
+        User user = userRepository.findById(adminUserDTO.getId()).orElseThrow();
+        User userFromDB = userRepository.findByUserEmail(adminUserDTO.getUserEmail());
+        if (Objects.nonNull(userFromDB) && !userFromDB.equals(user)) {
             log.error("User with email already exists");
             throw new RecordExistException("This email is already in use");
         }
-        User user = userRepository.findById(adminUserDTO.getId()).orElseThrow();
         user.setUserEmail(adminUserDTO.getUserEmail());
         user.setUserFirstName(adminUserDTO.getUserFirstName());
         user.setUserLastName(adminUserDTO.getUserLastName());
         user.setRole(new Role(RoleName.valueOf(adminUserDTO.getRoleList())));
         userRepository.save(user);
     }
-
 }

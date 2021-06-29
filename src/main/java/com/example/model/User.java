@@ -4,10 +4,11 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
+@TableGenerator(name = "tab", initialValue = 200, allocationSize = 1)
 @Table(name = "user")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "tab")
     @Column(name = "user_id")
     private Long id;
     @Column(name = "user_email")
