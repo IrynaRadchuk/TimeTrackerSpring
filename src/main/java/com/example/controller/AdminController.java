@@ -139,7 +139,9 @@ public class AdminController {
     }
 
     @PostMapping("/tracker/deleteUser")
-    public String deleteUser(@RequestParam Long id) {
+    public String deleteUser(@RequestParam Long id, RedirectAttributes redirect) {
+        log.info("User successfully deleted");
+        redirect.addFlashAttribute("messages", "User successfully deleted");
         userService.deleteUserById(id);
         return "redirect:adminUsers";
     }
